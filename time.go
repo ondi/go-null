@@ -20,6 +20,10 @@ type Time struct {
 	Valid bool
 }
 
+func (self Time) IsZero() bool {
+	return !self.Valid
+}
+
 func (self Time) String() string {
 	if self.Valid {
 		return self.Time.Format("2006-01-02T15:04:05Z07:00")

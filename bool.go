@@ -19,6 +19,10 @@ type Bool struct {
 	Valid bool
 }
 
+func (self Bool) IsZero() bool {
+	return !self.Valid
+}
+
 func (self Bool) String() string {
 	if self.Valid {
 		return strconv.FormatBool(self.Bool)

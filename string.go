@@ -19,6 +19,10 @@ type String struct {
 	Valid bool
 }
 
+func (self String) IsZero() bool {
+	return !self.Valid
+}
+
 func (self String) String() string {
 	if self.Valid {
 		return self.Str

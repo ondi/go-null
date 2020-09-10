@@ -19,6 +19,10 @@ type Float64 struct {
 	Valid bool
 }
 
+func (self Float64) IsZero() bool {
+	return !self.Valid
+}
+
 func (self Float64) String() string {
 	if self.Valid {
 		return strconv.FormatFloat(self.Float64, 'e', -1, 64)

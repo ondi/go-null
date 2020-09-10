@@ -19,6 +19,10 @@ type Int64 struct {
 	Valid bool
 }
 
+func (self Int64) IsZero() bool {
+	return !self.Valid
+}
+
 func (self Int64) String() string {
 	if self.Valid {
 		return strconv.FormatInt(self.Int64, 10)
