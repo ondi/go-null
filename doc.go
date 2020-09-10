@@ -1,4 +1,8 @@
 /*
+
+added support to IsEmptyJSON
+https://golang.org/cl/241179
+
 do not use multiple types in type swtich case
 https://github.com/golang/go/issues/38675
 

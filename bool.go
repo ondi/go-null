@@ -19,7 +19,7 @@ type Bool struct {
 	Valid bool
 }
 
-func (self Bool) IsZero() bool {
+func (self Bool) IsEmptyJSON() bool {
 	return !self.Valid
 }
 

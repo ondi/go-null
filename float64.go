@@ -19,7 +19,7 @@ type Float64 struct {
 	Valid bool
 }
 
-func (self Float64) IsZero() bool {
+func (self Float64) IsEmptyJSON() bool {
 	return !self.Valid
 }
 

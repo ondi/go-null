@@ -20,7 +20,7 @@ type Time struct {
 	Valid bool
 }
 
-func (self Time) IsZero() bool {
+func (self Time) IsEmptyJSON() bool {
 	return !self.Valid
 }
 
