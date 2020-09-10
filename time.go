@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -85,4 +86,31 @@ func (self Time) Value() (driver.Value, error) {
 		return self.Time, nil
 	}
 	return nil, nil
+}
+
+type TimeTs struct {
+	Time
+}
+
+func (self TimeTs) String() string {
+	if self.Valid {
+		return strconv.FormatInt(self.Time.Time.Unix(), 10)
+	}
+	return "null"
+}
+
+func (self TimeTs) MarshalJSON() ([]byte, error) {
+	if self.Valid {
+		return json.Marshal(self.Time.Time.Unix())
+	}
+	return json.Marshal(nil)
+}
+
+func (self *TimeTs) UnmarshalJSON(data []byte) (err error) {
+	var res int64
+	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
+		return
+	}
+	self.Time.Time, self.Time.Valid = time.Unix(res, 0), true
+	return
 }

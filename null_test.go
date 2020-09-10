@@ -44,9 +44,17 @@ func TestBool(t *testing.T) {
 }
 
 func TestTime(t *testing.T) {
-	test1 := Time{time.Time{}, true}
-	assert.Assert(t, test1.String() == "0001-01-01T00:00:00Z")
+	test1 := Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), true}
+	assert.Assert(t, test1.String() == "2020-09-10T11:12:13+03:00", test1.String())
 
-	test2 := Time{time.Time{}, false}
+	test2 := Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}
+	assert.Assert(t, test2.String() == "null")
+}
+
+func TestTimeTs(t *testing.T) {
+	test1 := TimeTs{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), true}}
+	assert.Assert(t, test1.String() == "1599725533")
+
+	test2 := TimeTs{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}}
 	assert.Assert(t, test2.String() == "null")
 }
