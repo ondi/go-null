@@ -88,7 +88,9 @@ func (self Time) Value() (driver.Value, error) {
 	return nil, nil
 }
 
+// swagger:type integer
 type TimeTs struct {
+	// swagger:ignore
 	Time
 }
 
