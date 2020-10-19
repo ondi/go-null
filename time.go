@@ -25,8 +25,11 @@ func (self Time) IsEmptyJSON() bool {
 	return !self.Valid
 }
 
-func (self Time) String() string {
+func (self Time) String(quotes ...string) string {
 	if self.Valid {
+		if len(quotes) > 1 {
+			return quotes[0] + self.Time.Format("2006-01-02T15:04:05Z07:00") + quotes[1]
+		}
 		return self.Time.Format("2006-01-02T15:04:05Z07:00")
 	}
 	return "null"

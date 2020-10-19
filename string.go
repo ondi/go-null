@@ -23,8 +23,11 @@ func (self String) IsEmptyJSON() bool {
 	return !self.Valid
 }
 
-func (self String) String() string {
+func (self String) String(quotes ...string) string {
 	if self.Valid {
+		if len(quotes) > 1 {
+			return quotes[0] + self.Str + quotes[1]
+		}
 		return self.Str
 	}
 	return "null"
