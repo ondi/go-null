@@ -23,8 +23,11 @@ func (self Float64) IsEmptyJSON() bool {
 	return !self.Valid
 }
 
-func (self Float64) String() string {
+func (self Float64) String(quotes ...string) string {
 	if self.Valid {
+		if len(quotes) > 1 {
+			return quotes[0] + strconv.FormatFloat(self.Float64, 'e', -1, 64) + quotes[1]
+		}
 		return strconv.FormatFloat(self.Float64, 'e', -1, 64)
 	}
 	return "null"
