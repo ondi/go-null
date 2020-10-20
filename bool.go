@@ -33,6 +33,21 @@ func (self Bool) String(quotes ...string) string {
 	return "null"
 }
 
+func (self Bool) StringInt(quotes ...string) (res string) {
+	if self.Valid {
+		if self.Bool {
+			res = "1"
+		} else {
+			res = "0"
+		}
+		if len(quotes) > 1 {
+			return quotes[0] + res + quotes[1]
+		}
+		return
+	}
+	return "null"
+}
+
 func (self Bool) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Bool)
