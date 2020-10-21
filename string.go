@@ -37,7 +37,7 @@ func (self String) String(quotes ...string) string {
 func (self String) StringSql(quotes ...string) (res string) {
 	if self.Valid {
 		res = strings.NewReplacer(
-			"'", "\\'",
+			"'", "''",
 			"\r", "\\r",
 			"\n", "\\n",
 		).Replace(self.Str)
