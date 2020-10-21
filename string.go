@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // swagger:type string
@@ -29,6 +30,21 @@ func (self String) String(quotes ...string) string {
 			return quotes[0] + self.Str + quotes[1]
 		}
 		return self.Str
+	}
+	return "null"
+}
+
+func (self String) StringSql(quotes ...string) (res string) {
+	if self.Valid {
+		res = strings.NewReplacer(
+			"'", "\\'",
+			"\r", "\\r",
+			"\n", "\\n",
+		).Replace(self.Str)
+		if len(quotes) > 1 {
+			return quotes[0] + res + quotes[1]
+		}
+		return
 	}
 	return "null"
 }
