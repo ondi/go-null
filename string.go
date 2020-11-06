@@ -20,8 +20,15 @@ type String struct {
 	Valid bool
 }
 
+func Err(err error) (res String) {
+	if err != nil {
+		res.Str, res.Valid = err.Error(), true
+	}
+	return
+}
+
 func (self String) IsEmptyJSON() bool {
-	return !self.Valid
+	return self.Valid == false
 }
 
 func (self String) String(quotes ...string) string {

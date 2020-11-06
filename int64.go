@@ -20,7 +20,7 @@ type Int64 struct {
 }
 
 func (self Int64) IsEmptyJSON() bool {
-	return !self.Valid
+	return self.Valid == false
 }
 
 func (self Int64) String(quotes ...string) string {

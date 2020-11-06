@@ -22,7 +22,7 @@ type Time struct {
 }
 
 func (self Time) IsEmptyJSON() bool {
-	return !self.Valid
+	return self.Valid == false
 }
 
 func (self Time) String(quotes ...string) string {

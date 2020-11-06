@@ -20,7 +20,7 @@ type Float64 struct {
 }
 
 func (self Float64) IsEmptyJSON() bool {
-	return !self.Valid
+	return self.Valid == false
 }
 
 func (self Float64) String(quotes ...string) string {

@@ -20,7 +20,7 @@ type Bool struct {
 }
 
 func (self Bool) IsEmptyJSON() bool {
-	return !self.Valid
+	return self.Valid == false
 }
 
 func (self Bool) String(quotes ...string) string {
