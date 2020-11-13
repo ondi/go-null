@@ -49,6 +49,48 @@ func TestTime(t *testing.T) {
 
 	test2 := Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}
 	assert.Assert(t, test2.String() == "null")
+
+	var err error
+	var test3 Time
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13+03:00\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13+0300\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13Z", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:00Z", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13 +03:00\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13 +0300\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:13Z", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T11:12:00Z", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09-10\""))
+	assert.NilError(t, err)
+	assert.Assert(t, test3.String() == "2020-09-10T00:00:00Z", test3.String())
+
+	err = test3.UnmarshalJSON([]byte("\"2020-09\""))
+	assert.Assert(t, err != nil, "should be error")
 }
 
 func TestTimeTs(t *testing.T) {

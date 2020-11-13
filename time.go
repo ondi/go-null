@@ -12,6 +12,18 @@ import (
 	"time"
 )
 
+var TimeFormat = []string{
+	`"2006-01-02T15:04:05Z07:00"`,
+	`"2006-01-02T15:04:05Z0700"`,
+	`"2006-01-02T15:04:05"`,
+	`"2006-01-02T15:04"`,
+	`"2006-01-02"`,
+	`"2006-01-02 15:04:05 -07:00"`,
+	`"2006-01-02 15:04:05 -0700"`,
+	`"2006-01-02 15:04:05"`,
+	`"2006-01-02 15:04"`,
+}
+
 // swagger:type string
 // swagger:strfmt date-time
 type Time struct {
@@ -43,31 +55,16 @@ func (self Time) MarshalJSON() ([]byte, error) {
 }
 
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
-	data_str := string(data)
-	self.Time, self.Valid = time.Time{}, false
-	if len(data_str) == 0 || data_str == "null" || data_str == `""` {
+	str := string(data)
+	if len(str) == 0 || str == "null" || str == `""` {
 		return
 	}
-	if self.Time, err = time.Parse(`"2006-01-02T15:04:05Z07:00"`, data_str); err != nil {
-		if self.Time, err = time.Parse(`"2006-01-02T15:04:05Z0700"`, data_str); err != nil {
-			if self.Time, err = time.Parse(`"2006-01-02T15:04:05"`, data_str); err != nil {
-				if self.Time, err = time.Parse(`"2006-01-02T15:04"`, data_str); err != nil {
-					if self.Time, err = time.Parse(`"2006-01-02 15:04:05 -07:00"`, data_str); err != nil {
-						if self.Time, err = time.Parse(`"2006-01-02 15:04:05 -0700"`, data_str); err != nil {
-							if self.Time, err = time.Parse(`"2006-01-02 15:04:05"`, data_str); err != nil {
-								if self.Time, err = time.Parse(`"2006-01-02 15:04"`, data_str); err != nil {
-									if self.Time, err = time.Parse(`"2006-01-02"`, data_str); err != nil {
-										return
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+	for _, layout := range TimeFormat {
+		if self.Time, err = time.Parse(layout, str); err == nil {
+			self.Valid = true
+			return
 		}
 	}
-	self.Valid = true
 	return
 }
 
