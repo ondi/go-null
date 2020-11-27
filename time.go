@@ -33,11 +33,11 @@ type Time struct {
 	Valid bool
 }
 
-func (self Time) IsEmptyJSON() bool {
+func (self *Time) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Time) String(quotes ...string) string {
+func (self *Time) String(quotes ...string) string {
 	if self.Valid {
 		if len(quotes) > 1 {
 			return quotes[0] + self.Time.Format("2006-01-02T15:04:05Z07:00") + quotes[1]
@@ -47,7 +47,7 @@ func (self Time) String(quotes ...string) string {
 	return "null"
 }
 
-func (self Time) MarshalJSON() ([]byte, error) {
+func (self *Time) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Time.Format("2006-01-02T15:04:05Z07:00"))
 	}
@@ -81,7 +81,7 @@ func (self *Time) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self Time) Value() (driver.Value, error) {
+func (self *Time) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Time, nil
 	}
@@ -94,14 +94,14 @@ type TimeTs struct {
 	Time
 }
 
-func (self TimeTs) String() string {
+func (self *TimeTs) String() string {
 	if self.Valid {
 		return strconv.FormatInt(self.Time.Time.Unix(), 10)
 	}
 	return "null"
 }
 
-func (self TimeTs) MarshalJSON() ([]byte, error) {
+func (self *TimeTs) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Time.Time.Unix())
 	}

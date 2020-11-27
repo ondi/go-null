@@ -19,11 +19,11 @@ type Float64 struct {
 	Valid bool
 }
 
-func (self Float64) IsEmptyJSON() bool {
+func (self *Float64) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Float64) String(quotes ...string) string {
+func (self *Float64) String(quotes ...string) string {
 	if self.Valid {
 		if len(quotes) > 1 {
 			return quotes[0] + strconv.FormatFloat(self.Float64, 'e', -1, 64) + quotes[1]
@@ -33,7 +33,7 @@ func (self Float64) String(quotes ...string) string {
 	return "null"
 }
 
-func (self Float64) MarshalJSON() ([]byte, error) {
+func (self *Float64) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Float64)
 	}
@@ -71,7 +71,7 @@ func (self *Float64) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self Float64) Value() (driver.Value, error) {
+func (self *Float64) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Float64, nil
 	}

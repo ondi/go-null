@@ -19,11 +19,11 @@ type Int64 struct {
 	Valid bool
 }
 
-func (self Int64) IsEmptyJSON() bool {
+func (self *Int64) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Int64) String(quotes ...string) string {
+func (self *Int64) String(quotes ...string) string {
 	if self.Valid {
 		if len(quotes) > 1 {
 			return quotes[0] + strconv.FormatInt(self.Int64, 10) + quotes[1]
@@ -33,7 +33,7 @@ func (self Int64) String(quotes ...string) string {
 	return "null"
 }
 
-func (self Int64) MarshalJSON() ([]byte, error) {
+func (self *Int64) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Int64)
 	}
@@ -73,7 +73,7 @@ func (self *Int64) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self Int64) Value() (driver.Value, error) {
+func (self *Int64) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Int64, nil
 	}

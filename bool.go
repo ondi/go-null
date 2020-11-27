@@ -19,11 +19,11 @@ type Bool struct {
 	Valid bool
 }
 
-func (self Bool) IsEmptyJSON() bool {
+func (self *Bool) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Bool) String(quotes ...string) string {
+func (self *Bool) String(quotes ...string) string {
 	if self.Valid {
 		if len(quotes) > 1 {
 			return quotes[0] + strconv.FormatBool(self.Bool) + quotes[1]
@@ -33,7 +33,7 @@ func (self Bool) String(quotes ...string) string {
 	return "null"
 }
 
-func (self Bool) StringInt(quotes ...string) (res string) {
+func (self *Bool) StringInt(quotes ...string) (res string) {
 	if self.Valid {
 		if self.Bool {
 			res = "1"
@@ -48,7 +48,7 @@ func (self Bool) StringInt(quotes ...string) (res string) {
 	return "null"
 }
 
-func (self Bool) MarshalJSON() ([]byte, error) {
+func (self *Bool) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Bool)
 	}
@@ -88,7 +88,7 @@ func (self *Bool) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self Bool) Value() (driver.Value, error) {
+func (self *Bool) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Bool, nil
 	}

@@ -27,11 +27,11 @@ func Err(err error) (res String) {
 	return
 }
 
-func (self String) IsEmptyJSON() bool {
+func (self *String) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self String) String(quotes ...string) string {
+func (self *String) String(quotes ...string) string {
 	if self.Valid {
 		if len(quotes) > 1 {
 			return quotes[0] + self.Str + quotes[1]
@@ -41,7 +41,7 @@ func (self String) String(quotes ...string) string {
 	return "null"
 }
 
-func (self String) StringSql(quotes ...string) (res string) {
+func (self *String) StringSql(quotes ...string) (res string) {
 	if self.Valid {
 		res = strings.NewReplacer(
 			"'", "''",
@@ -56,7 +56,7 @@ func (self String) StringSql(quotes ...string) (res string) {
 	return "null"
 }
 
-func (self String) MarshalJSON() ([]byte, error) {
+func (self *String) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Str)
 	}
@@ -92,7 +92,7 @@ func (self *String) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self String) Value() (driver.Value, error) {
+func (self *String) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Str, nil
 	}
