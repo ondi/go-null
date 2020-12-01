@@ -93,10 +93,18 @@ func TestTime(t *testing.T) {
 	assert.Assert(t, err != nil, "should be error")
 }
 
-func TestTimeTs(t *testing.T) {
-	test1 := TimeTs{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), true}}
+func TestTimeUnix(t *testing.T) {
+	test1 := TimeUnix{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), true}}
 	assert.Assert(t, test1.String() == "1599725533")
 
-	test2 := TimeTs{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}}
+	test2 := TimeUnix{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}}
+	assert.Assert(t, test2.String() == "null")
+}
+
+func TestTimeUnixNano(t *testing.T) {
+	test1 := TimeUnixNano{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), true}}
+	assert.Assert(t, test1.String() == "1599725533000000014")
+
+	test2 := TimeUnixNano{Time{time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60)), false}}
 	assert.Assert(t, test2.String() == "null")
 }

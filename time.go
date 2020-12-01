@@ -89,30 +89,58 @@ func (self *Time) Value() (driver.Value, error) {
 }
 
 // swagger:type integer
-type TimeTs struct {
+type TimeUnix struct {
 	// swagger:ignore
 	Time
 }
 
-func (self *TimeTs) String() string {
+func (self *TimeUnix) String() string {
 	if self.Valid {
 		return strconv.FormatInt(self.Time.Time.Unix(), 10)
 	}
 	return "null"
 }
 
-func (self *TimeTs) MarshalJSON() ([]byte, error) {
+func (self *TimeUnix) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return json.Marshal(self.Time.Time.Unix())
 	}
 	return json.Marshal(nil)
 }
 
-func (self *TimeTs) UnmarshalJSON(data []byte) (err error) {
+func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 	var res int64
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
 	self.Time.Time, self.Time.Valid = time.Unix(res, 0), true
+	return
+}
+
+type TimeUnixNano struct {
+	// swagger:ignore
+	Time
+}
+
+func (self *TimeUnixNano) String() string {
+	if self.Valid {
+		return strconv.FormatInt(self.Time.Time.UnixNano(), 10)
+	}
+	return "null"
+}
+
+func (self *TimeUnixNano) MarshalJSON() ([]byte, error) {
+	if self.Valid {
+		return json.Marshal(self.Time.Time.UnixNano())
+	}
+	return json.Marshal(nil)
+}
+
+func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
+	var res int64
+	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
+		return
+	}
+	self.Time.Time, self.Time.Valid = time.Unix(0, res), true
 	return
 }
