@@ -88,7 +88,7 @@ func (self *Bool) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self *Bool) Value() (driver.Value, error) {
+func (self Bool) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Bool, nil
 	}

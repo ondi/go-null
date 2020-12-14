@@ -71,7 +71,7 @@ func (self *Float64) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self *Float64) Value() (driver.Value, error) {
+func (self Float64) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Float64, nil
 	}

@@ -92,7 +92,7 @@ func (self *String) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self *String) Value() (driver.Value, error) {
+func (self String) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Str, nil
 	}

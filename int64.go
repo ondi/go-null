@@ -73,7 +73,7 @@ func (self *Int64) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self *Int64) Value() (driver.Value, error) {
+func (self Int64) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Int64, nil
 	}

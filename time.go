@@ -81,7 +81,7 @@ func (self *Time) Scan(value interface{}) (err error) {
 	}
 }
 
-func (self *Time) Value() (driver.Value, error) {
+func (self Time) Value() (driver.Value, error) {
 	if self.Valid {
 		return self.Time, nil
 	}
