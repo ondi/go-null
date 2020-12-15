@@ -76,6 +76,19 @@ func (self *String) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
+func (self *String) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+	var temp *string
+	if err = unmarshal(&temp); err != nil {
+		return
+	}
+	if temp != nil {
+		self.Str, self.Valid = *temp, true
+	} else {
+		self.Str, self.Valid = "", false
+	}
+	return
+}
+
 func (self *String) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:

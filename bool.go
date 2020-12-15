@@ -68,6 +68,19 @@ func (self *Bool) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
+func (self *Bool) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+	var temp *bool
+	if err = unmarshal(&temp); err != nil {
+		return
+	}
+	if temp != nil {
+		self.Bool, self.Valid = *temp, true
+	} else {
+		self.Bool, self.Valid = false, false
+	}
+	return
+}
+
 func (self *Bool) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:

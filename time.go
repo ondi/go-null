@@ -68,6 +68,19 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
+func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+	var temp *time.Time
+	if err = unmarshal(&temp); err != nil {
+		return
+	}
+	if temp != nil {
+		self.Time, self.Valid = *temp, true
+	} else {
+		self.Time, self.Valid = time.Time{}, false
+	}
+	return
+}
+
 func (self *Time) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
