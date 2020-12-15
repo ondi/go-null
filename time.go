@@ -57,6 +57,7 @@ func (self *Time) MarshalJSON() ([]byte, error) {
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
 	str := string(data)
 	if len(str) == 0 || str == "null" || str == `""` {
+		self.Valid = false
 		return
 	}
 	for _, layout := range TimeFormat {
@@ -69,14 +70,20 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
-	var temp *time.Time
+	var temp *string
 	if err = unmarshal(&temp); err != nil {
 		return
 	}
-	if temp != nil {
-		self.Time, self.Valid = *temp, true
-	} else {
-		self.Time, self.Valid = time.Time{}, false
+	if temp == nil || len(*temp) == 0 || *temp == "null" {
+		self.Valid = false
+		return
+	}
+	str := `"` + *temp + `"`
+	for _, layout := range TimeFormat {
+		if self.Time, err = time.Parse(layout, str); err == nil {
+			self.Valid = true
+			return
+		}
 	}
 	return
 }
