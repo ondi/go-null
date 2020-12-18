@@ -119,6 +119,13 @@ func (self Time) Value() (driver.Value, error) {
 // swagger:type integer
 type TimeUnix Time
 
+func (self TimeUnix) Get() time.Time {
+	if len(self) != 0 {
+		return self[0]
+	}
+	return time.Time{}
+}
+
 func (self TimeUnix) String() string {
 	if len(self) != 0 {
 		return strconv.FormatInt(self[0].Unix(), 10)
@@ -144,6 +151,13 @@ func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 
 // swagger:type integer
 type TimeUnixNano Time
+
+func (self TimeUnixNano) Get() time.Time {
+	if len(self) != 0 {
+		return self[0]
+	}
+	return time.Time{}
+}
 
 func (self TimeUnixNano) String() string {
 	if len(self) != 0 {
