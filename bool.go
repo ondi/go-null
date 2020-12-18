@@ -12,30 +12,36 @@ import (
 )
 
 // swagger:type boolean
-type Bool struct {
-	// swagger:ignore
-	Bool bool
-	// swagger:ignore
-	Valid bool
+type Bool []bool
+
+func (self Bool) Valid() bool {
+	return len(self) != 0
 }
 
-func (self *Bool) IsEmptyJSON() bool {
-	return self.Valid == false
+func (self Bool) Get() bool {
+	if len(self) != 0 {
+		return self[0]
+	}
+	return false
 }
 
-func (self *Bool) String(quotes ...string) string {
-	if self.Valid {
+func (self Bool) IsEmptyJSON() bool {
+	return len(self) == 0
+}
+
+func (self Bool) String(quotes ...string) string {
+	if len(self) != 0 {
 		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatBool(self.Bool) + quotes[1]
+			return quotes[0] + strconv.FormatBool(self[0]) + quotes[1]
 		}
-		return strconv.FormatBool(self.Bool)
+		return strconv.FormatBool(self[0])
 	}
 	return "null"
 }
 
-func (self *Bool) StringInt(quotes ...string) (res string) {
-	if self.Valid {
-		if self.Bool {
+func (self Bool) StringInt(quotes ...string) (res string) {
+	if len(self) != 0 {
+		if self[0] {
 			res = "1"
 		} else {
 			res = "0"
@@ -48,9 +54,9 @@ func (self *Bool) StringInt(quotes ...string) (res string) {
 	return "null"
 }
 
-func (self *Bool) MarshalJSON() ([]byte, error) {
-	if self.Valid {
-		return json.Marshal(self.Bool)
+func (self Bool) MarshalJSON() ([]byte, error) {
+	if len(self) != 0 {
+		return json.Marshal(self[0])
 	}
 	return json.Marshal(nil)
 }
@@ -61,9 +67,9 @@ func (self *Bool) UnmarshalJSON(data []byte) (err error) {
 		return
 	}
 	if temp != nil {
-		self.Bool, self.Valid = *temp, true
+		*self = Bool{*temp}
 	} else {
-		self.Bool, self.Valid = false, false
+		*self = Bool{}
 	}
 	return
 }
@@ -74,9 +80,9 @@ func (self *Bool) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 		return
 	}
 	if temp != nil {
-		self.Bool, self.Valid = *temp, true
+		*self = Bool{*temp}
 	} else {
-		self.Bool, self.Valid = false, false
+		*self = Bool{}
 	}
 	return
 }
@@ -84,16 +90,16 @@ func (self *Bool) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 func (self *Bool) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
-		self.Bool, self.Valid = false, false
+		*self = Bool{}
 		return
 	case bool:
-		self.Bool, self.Valid = v, true
+		*self = Bool{v}
 		return
 	case int64:
 		if v == 0 {
-			self.Bool, self.Valid = false, true
+			*self = Bool{false}
 		} else {
-			self.Bool, self.Valid = true, true
+			*self = Bool{true}
 		}
 		return
 	default:
@@ -102,8 +108,8 @@ func (self *Bool) Scan(value interface{}) (err error) {
 }
 
 func (self Bool) Value() (driver.Value, error) {
-	if self.Valid {
-		return self.Bool, nil
+	if len(self) != 0 {
+		return self[0], nil
 	}
 	return nil, nil
 }
