@@ -117,25 +117,20 @@ func (self Time) Value() (driver.Value, error) {
 }
 
 // swagger:type integer
-type TimeUnix Time
-
-func (self TimeUnix) Get() time.Time {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return time.Time{}
+type TimeUnix struct {
+	Time
 }
 
 func (self TimeUnix) String() string {
-	if len(self) != 0 {
-		return strconv.FormatInt(self[0].Unix(), 10)
+	if len(self.Time) != 0 {
+		return strconv.FormatInt(self.Time[0].Unix(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnix) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0].Unix())
+	if len(self.Time) != 0 {
+		return json.Marshal(self.Time[0].Unix())
 	}
 	return json.Marshal(nil)
 }
@@ -145,30 +140,25 @@ func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	*self = TimeUnix{time.Unix(res, 0)}
+	self.Time = Time{time.Unix(res, 0)}
 	return
 }
 
 // swagger:type integer
-type TimeUnixNano Time
-
-func (self TimeUnixNano) Get() time.Time {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return time.Time{}
+type TimeUnixNano struct {
+	Time
 }
 
 func (self TimeUnixNano) String() string {
-	if len(self) != 0 {
-		return strconv.FormatInt(self[0].UnixNano(), 10)
+	if len(self.Time) != 0 {
+		return strconv.FormatInt(self.Time[0].UnixNano(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0].UnixNano())
+	if len(self.Time) != 0 {
+		return json.Marshal(self.Time[0].UnixNano())
 	}
 	return json.Marshal(nil)
 }
@@ -178,6 +168,6 @@ func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	*self = TimeUnixNano{time.Unix(0, res)}
+	self.Time = Time{time.Unix(0, res)}
 	return
 }

@@ -97,7 +97,7 @@ func TestTime(t *testing.T) {
 
 func TestTimeUnix(t *testing.T) {
 	in := time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60))
-	test1 := TimeUnix{in}
+	test1 := TimeUnix{Time{in}}
 	assert.Assert(t, test1.String() == "1599725533")
 	assert.Assert(t, test1.Get() == in)
 
@@ -107,7 +107,7 @@ func TestTimeUnix(t *testing.T) {
 
 func TestTimeUnixNano(t *testing.T) {
 	in := time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60))
-	test1 := TimeUnixNano{in}
+	test1 := TimeUnixNano{Time{in}}
 	assert.Assert(t, test1.String() == "1599725533000000014")
 	assert.Assert(t, test1.Get() == in)
 
