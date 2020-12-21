@@ -12,17 +12,19 @@ import (
 	"time"
 )
 
-var TimeFormat = []string{
-	`"2006-01-02T15:04:05Z07:00"`,
-	`"2006-01-02T15:04:05Z0700"`,
-	`"2006-01-02T15:04:05"`,
-	`"2006-01-02T15:04"`,
-	`"2006-01-02"`,
-	`"2006-01-02 15:04:05 -07:00"`,
-	`"2006-01-02 15:04:05 -0700"`,
-	`"2006-01-02 15:04:05"`,
-	`"2006-01-02 15:04"`,
+var TimeFormatIn = []string{
+	"2006-01-02T15:04:05Z07:00",
+	"2006-01-02T15:04:05Z0700",
+	"2006-01-02T15:04:05",
+	"2006-01-02T15:04",
+	"2006-01-02",
+	"2006-01-02 15:04:05 -07:00",
+	"2006-01-02 15:04:05 -0700",
+	"2006-01-02 15:04:05",
+	"2006-01-02 15:04",
 }
+
+var TimeFormatOut = "2006-01-02T15:04:05Z07:00"
 
 // swagger:type string
 // swagger:strfmt date-time
@@ -46,28 +48,36 @@ func (self Time) IsEmptyJSON() bool {
 func (self Time) String(quotes ...string) string {
 	if len(self) != 0 {
 		if len(quotes) > 1 {
-			return quotes[0] + self[0].Format("2006-01-02T15:04:05Z07:00") + quotes[1]
+			return quotes[0] + self[0].Format(TimeFormatOut) + quotes[1]
 		}
-		return self[0].Format("2006-01-02T15:04:05Z07:00")
+		return self[0].Format(TimeFormatOut)
 	}
 	return "null"
 }
 
 func (self Time) MarshalJSON() ([]byte, error) {
 	if len(self) != 0 {
-		return json.Marshal(self[0].Format("2006-01-02T15:04:05Z07:00"))
+		return json.Marshal(self[0].Format(TimeFormatOut))
 	}
 	return json.Marshal(nil)
 }
 
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
-	str := string(data)
-	if len(str) == 0 || str == "null" || str == `""` {
+	if len(data) == 4 && data[0] == 'n' && data[1] == 'u' && data[2] == 'l' && data[3] == 'l' {
 		*self = Time{}
 		return
 	}
+	if len(data) == 2 && data[0] == '"' && data[1] == '"' {
+		*self = Time{}
+		return
+	}
+	if len(data) < 2 {
+		err = fmt.Errorf("TIME FORMAT LENGTH")
+		return
+	}
+	str := string(data[1 : len(data)-1])
 	var temp time.Time
-	for _, layout := range TimeFormat {
+	for _, layout := range TimeFormatIn {
 		if temp, err = time.Parse(layout, str); err == nil {
 			*self = Time{temp}
 			return
@@ -81,14 +91,13 @@ func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	if err = unmarshal(&temp); err != nil {
 		return
 	}
-	if temp == nil || len(*temp) == 0 || *temp == "null" {
+	if temp == nil || *temp == "null" {
 		*self = Time{}
 		return
 	}
-	str := `"` + *temp + `"`
 	var test time.Time
-	for _, layout := range TimeFormat {
-		if test, err = time.Parse(layout, str); err == nil {
+	for _, layout := range TimeFormatIn {
+		if test, err = time.Parse(layout, *temp); err == nil {
 			*self = Time{test}
 			return
 		}
