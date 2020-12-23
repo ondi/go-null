@@ -11,6 +11,12 @@ import (
 	"strings"
 )
 
+var Replacer = strings.NewReplacer(
+	"'", "''",
+	"\r", "\\r",
+	"\n", "\\n",
+)
+
 // swagger:type string
 type String []string
 
@@ -48,11 +54,7 @@ func (self String) String(quotes ...string) string {
 
 func (self String) StringSql(quotes ...string) (res string) {
 	if len(self) != 0 {
-		res = strings.NewReplacer(
-			"'", "''",
-			"\r", "\\r",
-			"\n", "\\n",
-		).Replace(self[0])
+		Replacer.Replace(self[0])
 		if len(quotes) > 1 {
 			return quotes[0] + res + quotes[1]
 		}
