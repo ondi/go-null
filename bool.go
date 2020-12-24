@@ -6,42 +6,35 @@ package null
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"fmt"
 	"strconv"
 )
 
 // swagger:type boolean
-type Bool []bool
-
-func (self Bool) Valid() bool {
-	return len(self) != 0
-}
-
-func (self Bool) Get() bool {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return false
+type Bool struct {
+	// swagger:ignore
+	Data bool
+	// swagger:ignore
+	Valid bool
 }
 
 func (self Bool) IsEmptyJSON() bool {
-	return len(self) == 0
+	return self.Valid == false
 }
 
 func (self Bool) String(quotes ...string) string {
-	if len(self) != 0 {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatBool(self[0]) + quotes[1]
+			return quotes[0] + strconv.FormatBool(self.Data) + quotes[1]
 		}
-		return strconv.FormatBool(self[0])
+		return strconv.FormatBool(self.Data)
 	}
 	return "null"
 }
 
 func (self Bool) StringInt(quotes ...string) (res string) {
-	if len(self) != 0 {
-		if self[0] {
+	if self.Valid {
+		if self.Data {
 			res = "1"
 		} else {
 			res = "0"
@@ -55,22 +48,21 @@ func (self Bool) StringInt(quotes ...string) (res string) {
 }
 
 func (self Bool) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0])
+	if self.Valid {
+		return []byte(strconv.FormatBool(self.Data)), nil
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *Bool) UnmarshalJSON(data []byte) (err error) {
-	var temp *bool
-	if err = json.Unmarshal(data, &temp); err != nil {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
 		return
 	}
-	if temp != nil {
-		*self = Bool{*temp}
-	} else {
-		*self = Bool{}
+	if self.Data, err = strconv.ParseBool(string(data)); err != nil {
+		return
 	}
+	self.Valid = true
 	return
 }
 
@@ -80,9 +72,9 @@ func (self *Bool) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 		return
 	}
 	if temp != nil {
-		*self = Bool{*temp}
+		self.Data, self.Valid = *temp, true
 	} else {
-		*self = Bool{}
+		self.Valid = false
 	}
 	return
 }
@@ -90,26 +82,24 @@ func (self *Bool) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 func (self *Bool) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
-		*self = Bool{}
-		return
+		self.Valid = false
 	case bool:
-		*self = Bool{v}
-		return
+		self.Data, self.Valid = v, true
 	case int64:
 		if v == 0 {
-			*self = Bool{false}
+			self.Data, self.Valid = false, true
 		} else {
-			*self = Bool{true}
+			self.Data, self.Valid = true, true
 		}
-		return
 	default:
-		return fmt.Errorf("not supported: %T %v", value, value)
+		err = fmt.Errorf("not supported: %T %v", value, value)
 	}
+	return
 }
 
 func (self Bool) Value() (driver.Value, error) {
-	if len(self) != 0 {
-		return self[0], nil
+	if self.Valid {
+		return self.Data, nil
 	}
 	return nil, nil
 }

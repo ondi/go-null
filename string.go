@@ -6,8 +6,8 @@ package null
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -18,43 +18,37 @@ var Replacer = strings.NewReplacer(
 )
 
 // swagger:type string
-type String []string
+type String struct {
+	// swagger:ignore
+	Data string
+	// swagger:ignore
+	Valid bool
+}
 
 func Err(err error) (res String) {
 	if err != nil {
-		res = String{err.Error()}
+		res.Data, res.Valid = err.Error(), true
 	}
 	return
 }
 
-func (self String) Valid() bool {
-	return len(self) != 0
-}
-
-func (self String) Get() string {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return ""
-}
-
 func (self String) IsEmptyJSON() bool {
-	return len(self) == 0
+	return self.Valid == false
 }
 
 func (self String) String(quotes ...string) string {
-	if len(self) != 0 {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + self[0] + quotes[1]
+			return quotes[0] + self.Data + quotes[1]
 		}
-		return self[0]
+		return self.Data
 	}
 	return "null"
 }
 
 func (self String) StringSql(quotes ...string) (res string) {
-	if len(self) != 0 {
-		Replacer.Replace(self[0])
+	if self.Valid {
+		Replacer.Replace(self.Data)
 		if len(quotes) > 1 {
 			return quotes[0] + res + quotes[1]
 		}
@@ -64,22 +58,21 @@ func (self String) StringSql(quotes ...string) (res string) {
 }
 
 func (self String) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0])
+	if self.Valid {
+		return []byte(strconv.Quote(string(self.Data))), nil
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *String) UnmarshalJSON(data []byte) (err error) {
-	var temp *string
-	if err = json.Unmarshal(data, &temp); err != nil {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
 		return
 	}
-	if temp != nil {
-		*self = String{*temp}
-	} else {
-		*self = String{}
+	if self.Data, err = strconv.Unquote(string(data)); err != nil {
+		return
 	}
+	self.Valid = true
 	return
 }
 
@@ -89,9 +82,9 @@ func (self *String) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 		return
 	}
 	if temp != nil {
-		*self = String{*temp}
+		self.Data, self.Valid = *temp, true
 	} else {
-		*self = String{}
+		self.Valid = false
 	}
 	return
 }
@@ -99,22 +92,20 @@ func (self *String) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 func (self *String) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
-		*self = String{}
-		return
+		self.Valid = false
 	case string:
-		*self = String{v}
-		return
+		self.Data, self.Valid = v, true
 	case []uint8:
-		*self = String{string(v)}
-		return
+		self.Data, self.Valid = string(v), true
 	default:
-		return fmt.Errorf("not supported: %T %v", value, value)
+		err = fmt.Errorf("not supported: %T %v", value, value)
 	}
+	return
 }
 
 func (self String) Value() (driver.Value, error) {
-	if len(self) != 0 {
-		return self[0], nil
+	if self.Valid {
+		return self.Data, nil
 	}
 	return nil, nil
 }

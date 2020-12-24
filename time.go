@@ -6,7 +6,6 @@ package null
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -28,54 +27,46 @@ var TimeFormatOut = "2006-01-02T15:04:05Z07:00"
 
 // swagger:type string
 // swagger:strfmt date-time
-type Time []time.Time
-
-func (self Time) Valid() bool {
-	return len(self) != 0
-}
-
-func (self Time) Get() time.Time {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return time.Time{}
+type Time struct {
+	// swagger:ignore
+	Data time.Time
+	// swagger:ignore
+	Valid bool
 }
 
 func (self Time) IsEmptyJSON() bool {
-	return len(self) == 0
+	return self.Valid == false
 }
 
 func (self Time) String(quotes ...string) string {
-	if len(self) != 0 {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + self[0].Format(TimeFormatOut) + quotes[1]
+			return quotes[0] + self.Data.Format(TimeFormatOut) + quotes[1]
 		}
-		return self[0].Format(TimeFormatOut)
+		return self.Data.Format(TimeFormatOut)
 	}
 	return "null"
 }
 
 func (self Time) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0].Format(TimeFormatOut))
+	if self.Valid {
+		return []byte(`"` + self.Data.Format(TimeFormatOut) + `"`), nil
 	}
 	return []byte("null"), nil
 }
 
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
 	if len(data) < 2 {
-		err = fmt.Errorf("FORMAT")
-		return
+		return fmt.Errorf("FORMAT")
 	}
 	if data[0] == 'n' || data[1] == '"' {
 		*self = Time{}
 		return
 	}
-	var temp time.Time
 	str := string(data[1 : len(data)-1])
 	for _, layout := range TimeFormatIn {
-		if temp, err = time.Parse(layout, str); err == nil {
-			*self = Time{temp}
+		if self.Data, err = time.Parse(layout, str); err == nil {
+			self.Valid = true
 			return
 		}
 	}
@@ -91,10 +82,9 @@ func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 		*self = Time{}
 		return
 	}
-	var test time.Time
 	for _, layout := range TimeFormatIn {
-		if test, err = time.Parse(layout, temp); err == nil {
-			*self = Time{test}
+		if self.Data, err = time.Parse(layout, temp); err == nil {
+			self.Valid = true
 			return
 		}
 	}
@@ -104,38 +94,41 @@ func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 func (self *Time) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
-		*self = Time{}
-		return
+		self.Valid = false
 	case time.Time:
-		*self = Time{v}
-		return
+		self.Data, self.Valid = v, true
 	default:
-		return fmt.Errorf("not supported: %T %v", value, value)
+		err = fmt.Errorf("not supported: %T %v", value, value)
 	}
+	return
 }
 
 func (self Time) Value() (driver.Value, error) {
-	if len(self) != 0 {
-		return self[0], nil
+	if self.Valid {
+		return self.Data, nil
 	}
 	return nil, nil
 }
 
 // swagger:type integer
 type TimeUnix struct {
+	// swagger:ignore
 	Time
 }
 
-func (self TimeUnix) String() string {
-	if len(self.Time) != 0 {
-		return strconv.FormatInt(self.Time[0].Unix(), 10)
+func (self TimeUnix) String(quotes ...string) string {
+	if self.Time.Valid {
+		if len(quotes) > 1 {
+			return quotes[0] + strconv.FormatInt(self.Time.Data.Unix(), 10) + quotes[1]
+		}
+		return strconv.FormatInt(self.Time.Data.Unix(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnix) MarshalJSON() ([]byte, error) {
-	if len(self.Time) != 0 {
-		return json.Marshal(self.Time[0].Unix())
+	if self.Time.Valid {
+		return []byte(strconv.FormatInt(self.Time.Data.Unix(), 10)), nil
 	}
 	return []byte("null"), nil
 }
@@ -145,25 +138,29 @@ func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	self.Time = Time{time.Unix(res, 0)}
+	self.Time.Data, self.Time.Valid = time.Unix(res, 0), true
 	return
 }
 
 // swagger:type integer
 type TimeUnixNano struct {
+	// swagger:ignore
 	Time
 }
 
-func (self TimeUnixNano) String() string {
-	if len(self.Time) != 0 {
-		return strconv.FormatInt(self.Time[0].UnixNano(), 10)
+func (self TimeUnixNano) String(quotes ...string) string {
+	if self.Time.Valid {
+		if len(quotes) > 1 {
+			return quotes[0] + strconv.FormatInt(self.Time.Data.UnixNano(), 10) + quotes[1]
+		}
+		return strconv.FormatInt(self.Time.Data.UnixNano(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
-	if len(self.Time) != 0 {
-		return json.Marshal(self.Time[0].UnixNano())
+	if self.Time.Valid {
+		return []byte(strconv.FormatInt(self.Time.Data.UnixNano(), 10)), nil
 	}
 	return []byte("null"), nil
 }
@@ -173,6 +170,6 @@ func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	self.Time = Time{time.Unix(0, res)}
+	self.Time.Data, self.Time.Valid = time.Unix(0, res), true
 	return
 }

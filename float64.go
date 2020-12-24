@@ -6,56 +6,48 @@ package null
 
 import (
 	"database/sql/driver"
-	"encoding/json"
 	"fmt"
 	"strconv"
 )
 
 // swagger:type number
-type Float64 []float64
-
-func (self Float64) Valid() bool {
-	return len(self) != 0
-}
-
-func (self Float64) Get() float64 {
-	if len(self) != 0 {
-		return self[0]
-	}
-	return 0
+type Float64 struct {
+	// swagger:ignore
+	Data float64
+	// swagger:ignore
+	Valid bool
 }
 
 func (self Float64) IsEmptyJSON() bool {
-	return len(self) == 0
+	return self.Valid == false
 }
 
 func (self Float64) String(quotes ...string) string {
-	if len(self) != 0 {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatFloat(self[0], 'e', -1, 64) + quotes[1]
+			return quotes[0] + strconv.FormatFloat(self.Data, 'e', -1, 64) + quotes[1]
 		}
-		return strconv.FormatFloat(self[0], 'e', -1, 64)
+		return strconv.FormatFloat(self.Data, 'e', -1, 64)
 	}
 	return "null"
 }
 
 func (self Float64) MarshalJSON() ([]byte, error) {
-	if len(self) != 0 {
-		return json.Marshal(self[0])
+	if self.Valid {
+		return []byte(strconv.FormatFloat(self.Data, 'e', -1, 64)), nil
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *Float64) UnmarshalJSON(data []byte) (err error) {
-	var temp *float64
-	if err = json.Unmarshal(data, &temp); err != nil {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
 		return
 	}
-	if temp != nil {
-		*self = Float64{*temp}
-	} else {
-		*self = Float64{}
+	if self.Data, err = strconv.ParseFloat(string(data), 64); err != nil {
+		return
 	}
+	self.Valid = true
 	return
 }
 
@@ -65,9 +57,9 @@ func (self *Float64) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 		return
 	}
 	if temp != nil {
-		*self = Float64{*temp}
+		self.Data, self.Valid = *temp, true
 	} else {
-		*self = Float64{}
+		self.Valid = false
 	}
 	return
 }
@@ -75,25 +67,22 @@ func (self *Float64) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 func (self *Float64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case nil:
-		*self = Float64{}
-		return
+		self.Valid = false
 	case float64:
-		*self = Float64{v}
-		return
+		self.Data, self.Valid = v, true
 	case []uint8:
-		var temp float64
-		if temp, err = strconv.ParseFloat(string(v), 64); err == nil {
-			*self = Float64{temp}
+		if self.Data, err = strconv.ParseFloat(string(v), 64); err == nil {
+			self.Valid = true
 		}
-		return
 	default:
-		return fmt.Errorf("not supported: %T %v", value, value)
+		err = fmt.Errorf("not supported: %T %v", value, value)
 	}
+	return
 }
 
 func (self Float64) Value() (driver.Value, error) {
-	if len(self) != 0 {
-		return self[0], nil
+	if self.Valid {
+		return self.Data, nil
 	}
 	return nil, nil
 }

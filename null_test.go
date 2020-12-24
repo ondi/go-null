@@ -13,42 +13,62 @@ import (
 )
 
 func TestString(t *testing.T) {
-	test1 := String{"lalala"}
-	assert.Assert(t, test1.String() == "lalala")
+	var test1 String
+	json.Unmarshal([]byte(`"lalala"`), &test1)
+	assert.Assert(t, test1.String() == "lalala", test1)
 
-	test2 := String{}
-	assert.Assert(t, test2.String() == "null")
+	temp, err := json.Marshal(test1)
+	assert.NilError(t, err)
+	assert.Assert(t, string(temp) == `"lalala"`)
+
+	json.Unmarshal([]byte(`null`), &test1)
+	assert.Assert(t, test1.String() == "null", test1)
 }
 
 func TestInt64(t *testing.T) {
-	test1 := Int64{10}
-	assert.Assert(t, test1.String() == "10")
+	var test1 Int64
+	json.Unmarshal([]byte("10"), &test1)
+	assert.Assert(t, test1.String() == "10", test1)
 
-	test2 := Int64{}
-	assert.Assert(t, test2.String() == "null")
+	temp, err := json.Marshal(test1)
+	assert.NilError(t, err)
+	assert.Assert(t, string(temp) == "10", test1)
+
+	json.Unmarshal([]byte("null"), &test1)
+	assert.Assert(t, test1.String() == "null", test1)
 }
 
 func TestFloat64(t *testing.T) {
-	test1 := Float64{5.5}
+	var test1 Float64
+	json.Unmarshal([]byte("5.5"), &test1)
 	assert.Assert(t, test1.String() == "5.5e+00")
 
-	test2 := Float64{}
-	assert.Assert(t, test2.String() == "null")
+	temp, err := json.Marshal(test1)
+	assert.NilError(t, err)
+	assert.Assert(t, string(temp) == "5.5e+00", test1)
+
+	json.Unmarshal([]byte("null"), &test1)
+	assert.Assert(t, test1.String() == "null")
 }
 
 func TestBool(t *testing.T) {
-	test1 := Bool{false}
+	var test1 Bool
+	json.Unmarshal([]byte("false"), &test1)
 	assert.Assert(t, test1.String() == "false")
 
-	test2 := Bool{}
-	assert.Assert(t, test2.String() == "null")
+	temp, err := json.Marshal(test1)
+	assert.NilError(t, err)
+	assert.Assert(t, string(temp) == "false", test1)
+
+	json.Unmarshal([]byte("null"), &test1)
+	assert.Assert(t, test1.String() == "null")
 }
 
 func TestTime01(t *testing.T) {
 	in := time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60))
-	test1 := Time{in}
+	test1 := Time{Data: in, Valid: true}
 	assert.Assert(t, test1.String() == "2020-09-10T11:12:13+03:00", test1.String())
-	assert.Assert(t, test1.Get() == in)
+	assert.Assert(t, test1.Data == in)
 
 	test2 := Time{}
 	assert.Assert(t, test2.String() == "null")
@@ -132,9 +152,9 @@ func TestTime02(t *testing.T) {
 
 func TestTimeUnix(t *testing.T) {
 	in := time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60))
-	test1 := TimeUnix{Time{in}}
+	test1 := TimeUnix{Time{Data: in, Valid: true}}
 	assert.Assert(t, test1.String() == "1599725533")
-	assert.Assert(t, test1.Get() == in)
+	assert.Assert(t, test1.Time.Data == in)
 
 	test2 := TimeUnix{}
 	assert.Assert(t, test2.String() == "null")
@@ -142,9 +162,9 @@ func TestTimeUnix(t *testing.T) {
 
 func TestTimeUnixNano(t *testing.T) {
 	in := time.Date(2020, 9, 10, 11, 12, 13, 14, time.FixedZone("UTC+3", 3*60*60))
-	test1 := TimeUnixNano{Time{in}}
+	test1 := TimeUnixNano{Time{Data: in, Valid: true}}
 	assert.Assert(t, test1.String() == "1599725533000000014")
-	assert.Assert(t, test1.Get() == in)
+	assert.Assert(t, test1.Data == in)
 
 	test2 := TimeUnixNano{}
 	assert.Assert(t, test2.String() == "null")
