@@ -59,24 +59,20 @@ func (self Time) MarshalJSON() ([]byte, error) {
 	if len(self) != 0 {
 		return json.Marshal(self[0].Format(TimeFormatOut))
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
-	if len(data) == 4 && data[0] == 'n' && data[1] == 'u' && data[2] == 'l' && data[3] == 'l' {
-		*self = Time{}
-		return
-	}
-	if len(data) == 2 && data[0] == '"' && data[1] == '"' {
-		*self = Time{}
-		return
-	}
 	if len(data) < 2 {
-		err = fmt.Errorf("TIME FORMAT LENGTH")
+		err = fmt.Errorf("FORMAT")
 		return
 	}
-	str := string(data[1 : len(data)-1])
+	if data[0] == 'n' || data[1] == '"' {
+		*self = Time{}
+		return
+	}
 	var temp time.Time
+	str := string(data[1 : len(data)-1])
 	for _, layout := range TimeFormatIn {
 		if temp, err = time.Parse(layout, str); err == nil {
 			*self = Time{temp}
@@ -87,17 +83,17 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
-	var temp *string
+	var temp string
 	if err = unmarshal(&temp); err != nil {
 		return
 	}
-	if temp == nil || *temp == "null" {
+	if len(temp) == 0 || temp == "null" {
 		*self = Time{}
 		return
 	}
 	var test time.Time
 	for _, layout := range TimeFormatIn {
-		if test, err = time.Parse(layout, *temp); err == nil {
+		if test, err = time.Parse(layout, temp); err == nil {
 			*self = Time{test}
 			return
 		}
@@ -141,7 +137,7 @@ func (self TimeUnix) MarshalJSON() ([]byte, error) {
 	if len(self.Time) != 0 {
 		return json.Marshal(self.Time[0].Unix())
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
@@ -169,7 +165,7 @@ func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
 	if len(self.Time) != 0 {
 		return json.Marshal(self.Time[0].UnixNano())
 	}
-	return json.Marshal(nil)
+	return []byte("null"), nil
 }
 
 func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {

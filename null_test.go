@@ -56,43 +56,43 @@ func TestTime01(t *testing.T) {
 	var err error
 	var test3 Time
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13+03:00\""))
+	err = json.Unmarshal([]byte("\"2020-09-10T11:12:13+03:00\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13+0300\""))
+	err = json.Unmarshal([]byte("\"2020-09-10T11:12:13+0300\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12:13\""))
+	err = json.Unmarshal([]byte("\"2020-09-10T11:12:13\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13Z", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10T11:12\""))
+	err = json.Unmarshal([]byte("\"2020-09-10T11:12\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:00Z", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13 +03:00\""))
+	err = json.Unmarshal([]byte("\"2020-09-10 11:12:13 +03:00\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13 +0300\""))
+	err = json.Unmarshal([]byte("\"2020-09-10 11:12:13 +0300\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13+03:00", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12:13\""))
+	err = json.Unmarshal([]byte("\"2020-09-10 11:12:13\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:13Z", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10 11:12\""))
+	err = json.Unmarshal([]byte("\"2020-09-10 11:12\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T11:12:00Z", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09-10\""))
+	err = json.Unmarshal([]byte("\"2020-09-10\""), &test3)
 	assert.NilError(t, err)
 	assert.Assert(t, test3.String() == "2020-09-10T00:00:00Z", test3.String())
 
-	err = test3.UnmarshalJSON([]byte("\"2020-09\""))
+	err = json.Unmarshal([]byte("\"2020-09\""), &test3)
 	assert.Assert(t, err != nil, "should be error")
 }
 
