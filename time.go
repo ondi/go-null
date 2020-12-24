@@ -117,18 +117,18 @@ type TimeUnix struct {
 }
 
 func (self TimeUnix) String(quotes ...string) string {
-	if self.Time.Valid {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatInt(self.Time.Data.Unix(), 10) + quotes[1]
+			return quotes[0] + strconv.FormatInt(self.Data.Unix(), 10) + quotes[1]
 		}
-		return strconv.FormatInt(self.Time.Data.Unix(), 10)
+		return strconv.FormatInt(self.Data.Unix(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnix) MarshalJSON() ([]byte, error) {
-	if self.Time.Valid {
-		return []byte(strconv.FormatInt(self.Time.Data.Unix(), 10)), nil
+	if self.Valid {
+		return []byte(strconv.FormatInt(self.Data.Unix(), 10)), nil
 	}
 	return []byte("null"), nil
 }
@@ -138,7 +138,7 @@ func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	self.Time.Data, self.Time.Valid = time.Unix(res, 0), true
+	self.Data, self.Valid = time.Unix(res, 0), true
 	return
 }
 
@@ -149,18 +149,18 @@ type TimeUnixNano struct {
 }
 
 func (self TimeUnixNano) String(quotes ...string) string {
-	if self.Time.Valid {
+	if self.Valid {
 		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatInt(self.Time.Data.UnixNano(), 10) + quotes[1]
+			return quotes[0] + strconv.FormatInt(self.Data.UnixNano(), 10) + quotes[1]
 		}
-		return strconv.FormatInt(self.Time.Data.UnixNano(), 10)
+		return strconv.FormatInt(self.Data.UnixNano(), 10)
 	}
 	return "null"
 }
 
 func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
-	if self.Time.Valid {
-		return []byte(strconv.FormatInt(self.Time.Data.UnixNano(), 10)), nil
+	if self.Valid {
+		return []byte(strconv.FormatInt(self.Data.UnixNano(), 10)), nil
 	}
 	return []byte("null"), nil
 }
@@ -170,6 +170,6 @@ func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
 	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
 		return
 	}
-	self.Time.Data, self.Time.Valid = time.Unix(0, res), true
+	self.Data, self.Valid = time.Unix(0, res), true
 	return
 }
