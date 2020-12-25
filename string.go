@@ -36,23 +36,24 @@ func (self String) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self String) String(quotes ...string) string {
+func (self String) String() string {
 	if self.Valid {
-		if len(quotes) > 1 {
-			return quotes[0] + self.Data + quotes[1]
-		}
 		return self.Data
 	}
 	return "null"
 }
 
-func (self String) StringSql(quotes ...string) (res string) {
+func (self String) StringQuote(a string, b string) string {
 	if self.Valid {
-		Replacer.Replace(self.Data)
-		if len(quotes) > 1 {
-			return quotes[0] + res + quotes[1]
-		}
-		return
+		return a + self.Data + b
+	}
+	return "null"
+}
+
+func (self String) StringSql(a string, b string) (res string) {
+	if self.Valid {
+		res = Replacer.Replace(self.Data)
+		return a + res + b
 	}
 	return "null"
 }

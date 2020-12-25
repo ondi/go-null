@@ -38,12 +38,16 @@ func (self Time) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Time) String(quotes ...string) string {
+func (self Time) String() string {
 	if self.Valid {
-		if len(quotes) > 1 {
-			return quotes[0] + self.Data.Format(TimeFormatOut) + quotes[1]
-		}
 		return self.Data.Format(TimeFormatOut)
+	}
+	return "null"
+}
+
+func (self Time) StringQuote(a string, b string) string {
+	if self.Valid {
+		return a + self.Data.Format(TimeFormatOut) + b
 	}
 	return "null"
 }

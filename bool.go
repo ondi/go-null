@@ -22,27 +22,19 @@ func (self Bool) IsEmptyJSON() bool {
 	return self.Valid == false
 }
 
-func (self Bool) String(quotes ...string) string {
+func (self Bool) String() string {
 	if self.Valid {
-		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatBool(self.Data) + quotes[1]
-		}
 		return strconv.FormatBool(self.Data)
 	}
 	return "null"
 }
 
-func (self Bool) StringInt(quotes ...string) (res string) {
+func (self Bool) StringInt() string {
 	if self.Valid {
 		if self.Data {
-			res = "1"
-		} else {
-			res = "0"
+			return "1"
 		}
-		if len(quotes) > 1 {
-			return quotes[0] + res + quotes[1]
-		}
-		return
+		return "0"
 	}
 	return "null"
 }
