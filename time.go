@@ -120,11 +120,8 @@ type TimeUnix struct {
 	Time
 }
 
-func (self TimeUnix) String(quotes ...string) string {
+func (self TimeUnix) String() string {
 	if self.Valid {
-		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatInt(self.Data.Unix(), 10) + quotes[1]
-		}
 		return strconv.FormatInt(self.Data.Unix(), 10)
 	}
 	return "null"
@@ -152,11 +149,8 @@ type TimeUnixNano struct {
 	Time
 }
 
-func (self TimeUnixNano) String(quotes ...string) string {
+func (self TimeUnixNano) String() string {
 	if self.Valid {
-		if len(quotes) > 1 {
-			return quotes[0] + strconv.FormatInt(self.Data.UnixNano(), 10) + quotes[1]
-		}
 		return strconv.FormatInt(self.Data.UnixNano(), 10)
 	}
 	return "null"
