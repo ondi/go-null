@@ -71,7 +71,7 @@ func (self *Int64) Scan(value interface{}) (err error) {
 		if v {
 			self.Data, self.Valid = 1, true
 		} else {
-			self.Valid = false
+			self.Data, self.Valid = 0, true
 		}
 	default:
 		err = fmt.Errorf("not supported: %T %v", v, v)
