@@ -58,6 +58,17 @@ func (self String) StringSql(a string, b string) (res string) {
 	return "null"
 }
 
+func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
+	if self.Valid {
+		res = Replacer.Replace(self.Data)
+		if len(res) > limit {
+			res = res[:limit]
+		}
+		return a + res + b
+	}
+	return "null"
+}
+
 func (self String) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return []byte(strconv.Quote(string(self.Data))), nil
