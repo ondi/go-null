@@ -39,7 +39,7 @@ func (self String) String() string {
 
 func (self String) StringQuote(a string, b string) (res string) {
 	if self.Valid {
-		res = strconv.Quote(self.Data)
+		res = strconv.QuoteToASCII(self.Data)
 		return a + res[1:len(res)-1] + b
 	}
 	return "null"
@@ -47,7 +47,7 @@ func (self String) StringQuote(a string, b string) (res string) {
 
 func (self String) StringSql(a string, b string) (res string) {
 	if self.Valid {
-		res = strconv.Quote(Replacer.Replace(self.Data))
+		res = strconv.QuoteToASCII(Replacer.Replace(self.Data))
 		return a + res[1:len(res)-1] + b
 	}
 	return "null"
@@ -55,7 +55,7 @@ func (self String) StringSql(a string, b string) (res string) {
 
 func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 	if self.Valid {
-		res = strconv.Quote(Replacer.Replace(self.Data))
+		res = strconv.QuoteToASCII(Replacer.Replace(self.Data))
 		if len(res) > limit {
 			res = res[1:limit]
 		} else {
@@ -68,7 +68,7 @@ func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 
 func (self String) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.Quote(string(self.Data))), nil
+		return []byte(strconv.QuoteToASCII(string(self.Data))), nil
 	}
 	return []byte("null"), nil
 }
