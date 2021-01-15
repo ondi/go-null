@@ -37,9 +37,10 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) StringQuote(a string, b string) string {
+func (self String) StringQuote(a string, b string) (res string) {
 	if self.Valid {
-		return a + self.Data + b
+		res = strconv.Quote(self.Data)
+		return a + res[1:len(res)-1] + b
 	}
 	return "null"
 }
