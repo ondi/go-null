@@ -13,8 +13,6 @@ import (
 
 var Replacer = strings.NewReplacer(
 	"'", "''",
-	"\r", "\\r",
-	"\n", "\\n",
 )
 
 // swagger:type string
@@ -48,17 +46,19 @@ func (self String) StringQuote(a string, b string) string {
 
 func (self String) StringSql(a string, b string) (res string) {
 	if self.Valid {
-		res = Replacer.Replace(self.Data)
-		return a + res + b
+		res = strconv.Quote(Replacer.Replace(self.Data))
+		return a + res[1:len(res)-1] + b
 	}
 	return "null"
 }
 
 func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 	if self.Valid {
-		res = Replacer.Replace(self.Data)
+		res = strconv.Quote(Replacer.Replace(self.Data))
 		if len(res) > limit {
-			res = res[:limit]
+			res = res[1:limit]
+		} else {
+			res = res[1 : len(res)-1]
 		}
 		return a + res + b
 	}
