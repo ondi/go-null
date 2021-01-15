@@ -18,10 +18,6 @@ type Float64 struct {
 	Valid bool
 }
 
-func (self Float64) IsEmptyJSON() bool {
-	return self.Valid == false
-}
-
 func (self Float64) String() string {
 	if self.Valid {
 		return strconv.FormatFloat(self.Data, 'e', -1, 64)

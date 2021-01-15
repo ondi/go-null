@@ -34,10 +34,6 @@ type Time struct {
 	Valid bool
 }
 
-func (self Time) IsEmptyJSON() bool {
-	return self.Valid == false
-}
-
 func (self Time) String() string {
 	if self.Valid {
 		return self.Data.Format(TimeFormatOut)

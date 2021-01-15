@@ -2,6 +2,9 @@
 
 added support to IsEmptyJSON
 https://golang.org/cl/241179
+replaced with:
+case reflect.Struct:
+    return reflect.Zero(v.Type()).Interface() == v.Interface()
 
 do not use multiple types in type swtich case
 https://github.com/golang/go/issues/38675

@@ -6,13 +6,18 @@ package null
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 	"time"
 
 	"gotest.tools/assert"
 )
 
-func TestString(t *testing.T) {
+type TestString_t struct {
+	Field1 String `json:"field1,omitempty"`
+}
+
+func TestString01(t *testing.T) {
 	var test1 String
 	json.Unmarshal([]byte(`"lalala"`), &test1)
 	assert.Assert(t, test1.String() == "lalala", test1)
@@ -23,6 +28,19 @@ func TestString(t *testing.T) {
 
 	json.Unmarshal([]byte(`null`), &test1)
 	assert.Assert(t, test1.String() == "null", test1)
+}
+
+func TestString02(t *testing.T) {
+	var test2 TestString_t
+
+	val := reflect.ValueOf(test2)
+	typ := val.Type()
+	assert.Assert(t, reflect.Type(typ).Kind() == reflect.Struct)
+	assert.Assert(t, reflect.Zero(typ).Interface() == val.Interface())
+
+	// temp, err := json.Marshal(test2)
+	// assert.NilError(t, err)
+	// assert.Assert(t, string(temp) == `{}`, string(temp))
 }
 
 func TestInt64(t *testing.T) {

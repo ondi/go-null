@@ -32,10 +32,6 @@ func Err(err error) (res String) {
 	return
 }
 
-func (self String) IsEmptyJSON() bool {
-	return self.Valid == false
-}
-
 func (self String) String() string {
 	if self.Valid {
 		return self.Data

@@ -18,10 +18,6 @@ type Bool struct {
 	Valid bool
 }
 
-func (self Bool) IsEmptyJSON() bool {
-	return self.Valid == false
-}
-
 func (self Bool) String() string {
 	if self.Valid {
 		return strconv.FormatBool(self.Data)

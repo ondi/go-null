@@ -18,10 +18,6 @@ type Int64 struct {
 	Valid bool
 }
 
-func (self Int64) IsEmptyJSON() bool {
-	return self.Valid == false
-}
-
 func (self Int64) String() string {
 	if self.Valid {
 		return strconv.FormatInt(self.Data, 10)
