@@ -30,6 +30,20 @@ func Err(err error) (res String) {
 	return
 }
 
+func StringTruncate(in string, limit int) string {
+	if len(in) <= limit {
+		return in
+	}
+	prev := 0
+	for i, _ := range in {
+		if i > limit {
+			break
+		}
+		prev = i
+	}
+	return in[:prev]
+}
+
 func (self String) String() string {
 	if self.Valid {
 		return self.Data
@@ -39,7 +53,7 @@ func (self String) String() string {
 
 func (self String) StringQuote(a string, b string) (res string) {
 	if self.Valid {
-		res = strconv.Quote(strings.ToValidUTF8(self.Data, ""))
+		res = strconv.Quote(self.Data)
 		return a + res[1:len(res)-1] + b
 	}
 	return "null"
@@ -47,7 +61,7 @@ func (self String) StringQuote(a string, b string) (res string) {
 
 func (self String) StringSql(a string, b string) (res string) {
 	if self.Valid {
-		res = strconv.Quote(strings.ToValidUTF8(Replacer.Replace(self.Data), ""))
+		res = strconv.Quote(Replacer.Replace(self.Data))
 		return a + res[1:len(res)-1] + b
 	}
 	return "null"
@@ -55,13 +69,8 @@ func (self String) StringSql(a string, b string) (res string) {
 
 func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 	if self.Valid {
-		res = strconv.Quote(strings.ToValidUTF8(Replacer.Replace(self.Data), ""))
-		if len(res) > limit {
-			res = res[1:limit]
-		} else {
-			res = res[1 : len(res)-1]
-		}
-		return a + res + b
+		res = strconv.Quote(Replacer.Replace(StringTruncate(self.Data, limit)))
+		return a + res[1:len(res)-1] + b
 	}
 	return "null"
 }
