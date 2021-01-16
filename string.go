@@ -30,18 +30,17 @@ func Err(err error) (res String) {
 	return
 }
 
-func StringTruncate(in string, limit int) string {
-	if len(in) <= limit {
-		return in
-	}
-	prev := 0
-	for i, _ := range in {
-		if i > limit {
-			break
+func StringLimit(in string, limit int) string {
+	if len(in) > limit {
+		var prev int
+		for i := range in {
+			if i > limit {
+				return in[:prev]
+			}
+			prev = i
 		}
-		prev = i
 	}
-	return in[:prev]
+	return in
 }
 
 func (self String) String() string {
@@ -69,7 +68,7 @@ func (self String) StringSql(a string, b string) (res string) {
 
 func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 	if self.Valid {
-		res = strconv.Quote(Replacer.Replace(StringTruncate(self.Data, limit)))
+		res = strconv.Quote(Replacer.Replace(StringLimit(self.Data, limit)))
 		return a + res[1:len(res)-1] + b
 	}
 	return "null"
