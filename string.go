@@ -50,26 +50,23 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) StringQuote(a string, b string) (res string) {
+func (self String) StringQuote(a string, b string) string {
 	if self.Valid {
-		res = strconv.Quote(self.Data)
-		return a + res[1:len(res)-1] + b
+		return a + self.Data + b
 	}
 	return "null"
 }
 
-func (self String) StringSql(a string, b string) (res string) {
+func (self String) StringSql(a string, b string) string {
 	if self.Valid {
-		res = strconv.Quote(Replacer.Replace(self.Data))
-		return a + res[1:len(res)-1] + b
+		return a + Replacer.Replace(self.Data) + b
 	}
 	return "null"
 }
 
 func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 	if self.Valid {
-		res = strconv.Quote(Replacer.Replace(StringLimit(self.Data, limit)))
-		return a + res[1:len(res)-1] + b
+		return a + Replacer.Replace(StringLimit(self.Data, limit)) + b
 	}
 	return "null"
 }
