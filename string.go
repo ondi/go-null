@@ -84,6 +84,7 @@ func (self *String) UnmarshalJSON(data []byte) (err error) {
 		return
 	}
 	if self.Data, err = strconv.Unquote(string(data)); err != nil {
+		err = fmt.Errorf("%.32s: %w", data, err)
 		return
 	}
 	self.Valid = true
