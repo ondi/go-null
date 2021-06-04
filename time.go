@@ -48,6 +48,20 @@ func (self Time) StringQuote(a string, b string) string {
 	return "null"
 }
 
+func (self Time) StringFormat(format string) string {
+	if self.Valid {
+		return self.Data.Format(format)
+	}
+	return "null"
+}
+
+func (self Time) StringQuoteFormat(a string, b string, format string) string {
+	if self.Valid {
+		return a + self.Data.Format(format) + b
+	}
+	return "null"
+}
+
 func (self Time) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return []byte(`"` + self.Data.Format(TimeFormatOut) + `"`), nil
