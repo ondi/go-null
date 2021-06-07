@@ -73,7 +73,7 @@ func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
 
 func (self String) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.Quote(string(self.Data))), nil
+		return []byte(strconv.Quote(self.Data)), nil
 	}
 	return []byte("null"), nil
 }
