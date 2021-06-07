@@ -124,3 +124,33 @@ func (self String) Value() (driver.Value, error) {
 	}
 	return nil, nil
 }
+
+// allow to use .String() method with embedded String struct
+type str = String
+
+// StringPrice uses no quotes in string representation
+// swagger:type string
+type StringPrice struct {
+	str
+}
+
+func (self StringPrice) MarshalJSON() (res []byte, err error) {
+	if self.Valid {
+		temp := strconv.Quote(self.Data)
+		return []byte(temp[1 : len(temp)-1]), nil
+	}
+	return []byte("null"), nil
+}
+
+func (self *StringPrice) UnmarshalJSON(data []byte) (err error) {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
+		return
+	}
+	if self.Data, err = strconv.Unquote(`"` + string(data) + `"`); err != nil {
+		err = fmt.Errorf("%.32s: %w", data, err)
+		return
+	}
+	self.Valid = true
+	return
+}

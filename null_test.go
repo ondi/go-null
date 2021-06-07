@@ -43,6 +43,19 @@ func TestString02(t *testing.T) {
 	// assert.Assert(t, string(temp) == `{}`, string(temp))
 }
 
+func TestString03(t *testing.T) {
+	var test1 StringPrice
+	json.Unmarshal([]byte(`123.45`), &test1)
+	assert.Assert(t, test1.String() == "123.45", test1)
+
+	temp, err := json.Marshal(test1)
+	assert.NilError(t, err)
+	assert.Assert(t, string(temp) == `123.45`)
+
+	json.Unmarshal([]byte(`null`), &test1)
+	assert.Assert(t, test1.String() == "null", test1)
+}
+
 func TestInt64(t *testing.T) {
 	var test1 Int64
 	json.Unmarshal([]byte("10"), &test1)
