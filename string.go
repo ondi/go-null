@@ -154,3 +154,21 @@ func (self *StringPrice) UnmarshalJSON(data []byte) (err error) {
 	self.Valid = true
 	return
 }
+
+func (self *StringPrice) Scan(value interface{}) (err error) {
+	switch v := value.(type) {
+	case nil:
+		self.Valid = false
+	case int64:
+		self.Data, self.Valid = strconv.FormatInt(v, 10), true
+	case float64:
+		self.Data, self.Valid = strconv.FormatFloat(v, 'f', 4, 64), true
+	case string:
+		self.Data, self.Valid = v, true
+	case []uint8:
+		self.Data, self.Valid = string(v), true
+	default:
+		err = fmt.Errorf("not supported: %T %v", value, value)
+	}
+	return
+}
