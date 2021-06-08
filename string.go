@@ -126,12 +126,12 @@ func (self String) Value() (driver.Value, error) {
 }
 
 // allow to use .String() method with embedded String struct
-type str = String
+type Str = String
 
 // StringPrice uses no quotes in string representation
 // swagger:type string
 type StringPrice struct {
-	str
+	Str
 }
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
@@ -162,7 +162,7 @@ func (self *StringPrice) Scan(value interface{}) (err error) {
 	case int64:
 		self.Data, self.Valid = strconv.FormatInt(v, 10), true
 	case float64:
-		self.Data, self.Valid = strconv.FormatFloat(v, 'f', 4, 64), true
+		self.Data, self.Valid = strconv.FormatFloat(v, 'e', -1, 64), true
 	case string:
 		self.Data, self.Valid = v, true
 	case []uint8:
