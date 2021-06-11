@@ -59,8 +59,6 @@ func (self *Int64) UnmarshalYAML(unmarshal func(interface{}) error) (err error) 
 
 func (self *Int64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
-	case nil:
-		self.Valid = false
 	case int64:
 		self.Data, self.Valid = v, true
 	case bool:
@@ -69,6 +67,8 @@ func (self *Int64) Scan(value interface{}) (err error) {
 		} else {
 			self.Data, self.Valid = 0, true
 		}
+	case nil:
+		self.Valid = false
 	default:
 		err = fmt.Errorf("not supported: %T %v", v, v)
 	}

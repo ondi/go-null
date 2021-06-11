@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var Replacer = strings.NewReplacer(
@@ -106,16 +107,24 @@ func (self *String) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 
 func (self *String) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
-	case nil:
-		self.Valid = false
-	case int64:
-		self.Data, self.Valid = strconv.FormatInt(v, 10), true
-	case float64:
-		self.Data, self.Valid = strconv.FormatFloat(v, 'e', -1, 64), true
 	case string:
 		self.Data, self.Valid = v, true
 	case []uint8:
 		self.Data, self.Valid = string(v), true
+	case int64:
+		self.Data, self.Valid = strconv.FormatInt(v, 10), true
+	case float64:
+		self.Data, self.Valid = strconv.FormatFloat(v, 'e', -1, 64), true
+	case time.Time:
+		self.Data, self.Valid = v.Format(TimeFormatOut), true
+	case bool:
+		if v {
+			self.Data, self.Valid = "true", true
+		} else {
+			self.Data, self.Valid = "false", true
+		}
+	case nil:
+		self.Valid = false
 	default:
 		err = fmt.Errorf("not supported: %T %v", value, value)
 	}

@@ -59,14 +59,14 @@ func (self *Float64) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 
 func (self *Float64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
-	case nil:
-		self.Valid = false
 	case float64:
 		self.Data, self.Valid = v, true
 	case []uint8:
 		if self.Data, err = strconv.ParseFloat(string(v), 64); err == nil {
 			self.Valid = true
 		}
+	case nil:
+		self.Valid = false
 	default:
 		err = fmt.Errorf("not supported: %T %v", value, value)
 	}
