@@ -101,7 +101,7 @@ type Scanner interface {
 }
 
 func ScanQuery(s Scanner, name string, m map[string][]string) error {
-	if temp, _ := m[name]; len(temp) > 0 {
+	if temp, _ := m[name]; len(temp) > 0 && temp[0] != "null" {
 		return s.Scan(temp[0])
 	}
 	return s.Scan(nil)
