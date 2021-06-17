@@ -109,6 +109,13 @@ func (self *Time) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case time.Time:
 		self.Data, self.Valid = v, true
+	case string:
+		for _, layout := range TimeFormatIn {
+			if self.Data, err = time.Parse(layout, v); err == nil {
+				self.Valid = true
+				return
+			}
+		}
 	case nil:
 		self.Valid = false
 	default:
