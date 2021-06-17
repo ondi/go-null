@@ -95,3 +95,14 @@ type Rows interface {
 */
 
 package null
+
+type Scanner interface {
+	Scan(interface{}) error
+}
+
+func ScanQuery(s Scanner, name string, m map[string][]string) error {
+	if temp, _ := m[name]; len(temp) > 0 {
+		return s.Scan(temp[0])
+	}
+	return s.Scan(nil)
+}

@@ -200,3 +200,11 @@ func TestTimeUnixNano(t *testing.T) {
 	test2 := TimeUnixNano{}
 	assert.Assert(t, test2.String() == "null")
 }
+
+func TestScan01(t *testing.T) {
+	var a Int64
+	query := map[string][]string{"test": {"123"}}
+	ScanQuery(&a, "test", query)
+	assert.Assert(t, a.Valid == true)
+	assert.Assert(t, a.Data == 123)
+}
