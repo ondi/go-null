@@ -61,10 +61,16 @@ func (self *Float64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case float64:
 		self.Data, self.Valid = v, true
+	case string:
+		if self.Data, err = strconv.ParseFloat(v, 64); err == nil {
+			self.Valid = true
+		}
 	case []uint8:
 		if self.Data, err = strconv.ParseFloat(string(v), 64); err == nil {
 			self.Valid = true
 		}
+	case int64:
+		self.Data, self.Valid = float64(v), true
 	case nil:
 		self.Valid = false
 	default:

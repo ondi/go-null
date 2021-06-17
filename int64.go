@@ -61,6 +61,16 @@ func (self *Int64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case int64:
 		self.Data, self.Valid = v, true
+	case string:
+		if self.Data, err = strconv.ParseInt(v, 0, 64); err == nil {
+			self.Valid = true
+		}
+	case []uint8:
+		if self.Data, err = strconv.ParseInt(string(v), 0, 64); err == nil {
+			self.Valid = true
+		}
+	case float64:
+		self.Data, self.Valid = int64(v), true
 	case bool:
 		if v {
 			self.Data, self.Valid = 1, true

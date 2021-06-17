@@ -77,6 +77,14 @@ func (self *Bool) Scan(value interface{}) (err error) {
 		} else {
 			self.Data, self.Valid = true, true
 		}
+	case string:
+		if self.Data, err = strconv.ParseBool(v); err == nil {
+			self.Valid = true
+		}
+	case []uint8:
+		if self.Data, err = strconv.ParseBool(string(v)); err == nil {
+			self.Valid = true
+		}
 	case nil:
 		self.Valid = false
 	default:
