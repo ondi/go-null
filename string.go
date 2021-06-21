@@ -33,16 +33,16 @@ func Err(err error) (res String) {
 }
 
 func StringLimit(in string, limit int) string {
-	if len(in) > limit {
-		for ; limit > 0; limit-- {
-			var r rune
-			if r, _ = utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
-				break
-			}
-		}
-		in = in[:limit]
+	if len(in) <= limit {
+		return in
 	}
-	return in
+	var r rune
+	for ; limit > 0; limit-- {
+		if r, _ = utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
+			break
+		}
+	}
+	return in[:limit]
 }
 
 func (self String) String() string {
