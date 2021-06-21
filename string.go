@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 var Replacer = strings.NewReplacer(
@@ -33,13 +34,13 @@ func Err(err error) (res String) {
 
 func StringLimit(in string, limit int) string {
 	if len(in) > limit {
-		var prev int
-		for i := range in {
-			if i > limit {
-				return in[:prev]
+		for ; limit > 0; limit-- {
+			var r rune
+			if r, _ = utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
+				break
 			}
-			prev = i
 		}
+		in = in[:limit]
 	}
 	return in
 }

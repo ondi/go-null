@@ -208,3 +208,8 @@ func TestScan01(t *testing.T) {
 	assert.Assert(t, a.Valid == true)
 	assert.Assert(t, a.Data == 123)
 }
+
+func TestLimit01(t *testing.T) {
+	a := StringLimit("你好嗎", 8)
+	assert.Assert(t, a == "你好", a)
+}
