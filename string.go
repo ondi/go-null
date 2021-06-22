@@ -25,7 +25,7 @@ type String struct {
 	Valid bool
 }
 
-func Err(err error) (res String) {
+func Error(err error) (res String) {
 	if err != nil {
 		res.Data, res.Valid = err.Error(), true
 	}
@@ -33,16 +33,15 @@ func Err(err error) (res String) {
 }
 
 func StringLimit(in string, limit int) string {
-	if len(in) <= limit {
-		return in
-	}
-	var r rune
-	for ; limit > 0; limit-- {
-		if r, _ = utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
-			break
+	if len(in) > limit {
+		for ; limit > 0; limit-- {
+			if r, _ := utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
+				break
+			}
 		}
+		return in[:limit]
 	}
-	return in[:limit]
+	return in
 }
 
 func (self String) String() string {
