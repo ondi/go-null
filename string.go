@@ -138,7 +138,7 @@ func (self String) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-// allow to use .String() method with embedded String struct
+// make .String() method available with embedded String struct
 type Str = String
 
 // StringPrice uses no quotes in string representation

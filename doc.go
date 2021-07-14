@@ -96,6 +96,8 @@ type Rows interface {
 
 package null
 
+import "database/sql/driver"
+
 type Scanner interface {
 	Scan(interface{}) error
 }
@@ -105,4 +107,14 @@ func ScanQuery(s Scanner, name string, m map[string][]string) error {
 		return s.Scan(temp[0])
 	}
 	return s.Scan(nil)
+}
+
+type None struct{}
+
+func (None) Scan(value interface{}) (err error) {
+	return
+}
+
+func (None) Value() (driver.Value, error) {
+	return nil, nil
 }
