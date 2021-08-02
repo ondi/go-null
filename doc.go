@@ -109,6 +109,13 @@ func ScanQuery(s Scanner, name string, m map[string][]string) error {
 	return s.Scan(nil)
 }
 
+func ScanVars(s Scanner, name string, m map[string]string) error {
+	if temp, ok := m[name]; ok {
+		return s.Scan(temp)
+	}
+	return s.Scan(nil)
+}
+
 type None struct{}
 
 func (None) Scan(value interface{}) (err error) {
