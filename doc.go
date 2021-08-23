@@ -92,6 +92,8 @@ type Rows interface {
     Next(dest []Value) error
 }
 
+https://github.com/go-swagger/go-swagger/issues/2229
+
 */
 
 package null

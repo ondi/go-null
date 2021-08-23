@@ -144,6 +144,7 @@ type Str = String
 // StringPrice uses no quotes in string representation
 // swagger:type string
 type StringPrice struct {
+	// swagger:ignore
 	Str
 }
 
