@@ -58,18 +58,18 @@ func TestString03(t *testing.T) {
 
 func TestString04(t *testing.T) {
 	test1 := String{Data: `123"456`, Valid: true}
-	assert.Assert(t, test1.StringOpts(StrEscape(), StrQuote("'", "'")) == `'123\"456'`, test1.StringOpts(StrEscape(), StrQuote(",", "'")))
+	assert.Assert(t, test1.StringQuote("'", "'", StrEscape()) == `'123\"456'`, test1.StringQuote("'", "'", StrEscape()))
 
 	test1.Valid = false
-	assert.Assert(t, test1.StringOpts(StrEscape(), StrQuote("'", "'")) == "null", test1)
+	assert.Assert(t, test1.StringQuote("'", "'", StrEscape()) == "null", test1)
 }
 
 func TestString05(t *testing.T) {
 	test1 := String{Data: `1234567890`, Valid: true}
-	assert.Assert(t, test1.StringOpts(StrLimit(5)) == `12345`, test1.StringOpts(StrLimit(5)))
+	assert.Assert(t, test1.StringQuote("", "", StrLimit(5)) == `12345`, test1.StringQuote("", "", StrLimit(5)))
 
 	test1.Valid = false
-	assert.Assert(t, test1.StringOpts(StrLimit(5)) == "null", test1.StringOpts(StrLimit(5)))
+	assert.Assert(t, test1.StringQuote("", "", StrLimit(5)) == "null", test1.StringQuote("", "", StrLimit(5)))
 }
 
 func TestInt64(t *testing.T) {

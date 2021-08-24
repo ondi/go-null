@@ -51,39 +51,17 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) StringQuote(a string, b string) string {
+func (self String) StringQuote(a string, b string, opts ...StringOption) string {
 	if self.Valid {
+		for _, v := range opts {
+			self.Data = v(self.Data)
+		}
 		return a + self.Data + b
 	}
 	return "null"
 }
 
-// DEPRECATED
-func (self String) StringSql(a string, b string) string {
-	if self.Valid {
-		return a + Replacer.Replace(self.Data) + b
-	}
-	return "null"
-}
-
-func (self String) StringOpts(opts ...StringOption) (res string) {
-	if self.Valid {
-		res = self.Data
-		for _, v := range opts {
-			res = v(res)
-		}
-		return
-	}
-	return "null"
-}
-
 type StringOption func(in string) string
-
-func StrQuote(a string, b string) StringOption {
-	return func(in string) string {
-		return a + in + b
-	}
-}
 
 func StrEscape() StringOption {
 	return func(in string) (res string) {
