@@ -58,6 +58,14 @@ func (self String) StringQuote(a string, b string) string {
 	return "null"
 }
 
+func (self String) StringEscapeQuote(a string, b string) string {
+	if self.Valid {
+		temp := strconv.Quote(self.Data)
+		return a + temp[1:len(temp)-1] + b
+	}
+	return "null"
+}
+
 func (self String) StringSql(a string, b string) string {
 	if self.Valid {
 		return a + Replacer.Replace(self.Data) + b

@@ -56,6 +56,14 @@ func TestString03(t *testing.T) {
 	assert.Assert(t, test1.String() == "null", test1)
 }
 
+func TestString04(t *testing.T) {
+	test1 := String{Data: `123"456`, Valid: true}
+	assert.Assert(t, test1.StringEscapeQuote("'", "'") == `'123\"456'`, test1.StringEscapeQuote("'", "'"))
+
+	test1.Valid = false
+	assert.Assert(t, test1.StringEscapeQuote("'", "'") == "null", test1)
+}
+
 func TestInt64(t *testing.T) {
 	var test1 Int64
 	json.Unmarshal([]byte("10"), &test1)
