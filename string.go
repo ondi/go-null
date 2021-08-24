@@ -51,7 +51,6 @@ func (self String) String() string {
 	return "null"
 }
 
-// DEPRECATED
 func (self String) StringQuote(a string, b string) string {
 	if self.Valid {
 		return a + self.Data + b
