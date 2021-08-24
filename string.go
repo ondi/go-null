@@ -51,6 +51,7 @@ func (self String) String() string {
 	return "null"
 }
 
+// DEPRECATED
 func (self String) StringQuote(a string, b string) string {
 	if self.Valid {
 		return a + self.Data + b
@@ -58,14 +59,7 @@ func (self String) StringQuote(a string, b string) string {
 	return "null"
 }
 
-func (self String) StringEscapeQuote(a string, b string) string {
-	if self.Valid {
-		temp := strconv.Quote(self.Data)
-		return a + temp[1:len(temp)-1] + b
-	}
-	return "null"
-}
-
+// DEPRECATED
 func (self String) StringSql(a string, b string) string {
 	if self.Valid {
 		return a + Replacer.Replace(self.Data) + b
@@ -73,11 +67,42 @@ func (self String) StringSql(a string, b string) string {
 	return "null"
 }
 
-func (self String) StringSqlLimit(a string, b string, limit int) (res string) {
+func (self String) StringOpts(opts ...StringOption) (res string) {
 	if self.Valid {
-		return a + Replacer.Replace(StringLimit(self.Data, limit)) + b
+		res = self.Data
+		for _, v := range opts {
+			res = v(res)
+		}
+		return
 	}
 	return "null"
+}
+
+type StringOption func(in string) string
+
+func StrQuote(a string, b string) StringOption {
+	return func(in string) string {
+		return a + in + b
+	}
+}
+
+func StrEscape() StringOption {
+	return func(in string) (res string) {
+		res = strconv.Quote(in)
+		return res[1 : len(res)-1]
+	}
+}
+
+func StrReplace() StringOption {
+	return func(in string) string {
+		return Replacer.Replace(in)
+	}
+}
+
+func StrLimit(limit int) StringOption {
+	return func(in string) string {
+		return StringLimit(in, limit)
+	}
 }
 
 func (self String) MarshalJSON() ([]byte, error) {
