@@ -51,12 +51,12 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) StringQuote(a string, b string, opts ...StringOption) string {
+func (self String) StringOp(opts ...StringOption) string {
 	if self.Valid {
 		for _, v := range opts {
 			self.Data = v(self.Data)
 		}
-		return a + self.Data + b
+		return self.Data
 	}
 	return "null"
 }
@@ -79,6 +79,12 @@ func StrReplace() StringOption {
 func StrLimit(limit int) StringOption {
 	return func(in string) string {
 		return StringLimit(in, limit)
+	}
+}
+
+func StrQuote(a string, b string) StringOption {
+	return func(in string) string {
+		return a + in + b
 	}
 }
 
