@@ -41,16 +41,24 @@ func (self Time) String() string {
 	return "null"
 }
 
-func (self Time) StringQuote(a string, b string) string {
+func (self Time) StringOp(opts ...StringOption) (res string) {
 	if self.Valid {
-		return a + self.Data.Format(TimeFormatOut) + b
+		res = self.Data.Format(TimeFormatOut)
+		for _, v := range opts {
+			res = v(res)
+		}
+		return
 	}
 	return "null"
 }
 
-func (self Time) StringQuoteFormat(a string, b string, format string) string {
+func (self Time) StringFormat(format string, opts ...StringOption) (res string) {
 	if self.Valid {
-		return a + self.Data.Format(format) + b
+		res = self.Data.Format(format)
+		for _, v := range opts {
+			res = v(res)
+		}
+		return
 	}
 	return "null"
 }
