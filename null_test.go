@@ -58,18 +58,18 @@ func TestString03(t *testing.T) {
 
 func TestString04(t *testing.T) {
 	test1 := String{Data: `123"456`, Valid: true}
-	assert.Assert(t, test1.StringOp(StrEscape(), StrQuote("'", "'")) == `'123\"456'`, test1.StringOp(StrEscape(), StrQuote("'", "'")))
+	assert.Assert(t, test1.Strings(StrEscape(), StrQuote("'", "'")) == `'123\"456'`, test1.Strings(StrEscape(), StrQuote("'", "'")))
 
 	test1.Valid = false
-	assert.Assert(t, test1.StringOp(StrEscape(), StrQuote("'", "'")) == "null", test1)
+	assert.Assert(t, test1.Strings(StrEscape(), StrQuote("'", "'")) == "null", test1)
 }
 
 func TestString05(t *testing.T) {
 	test1 := String{Data: `1234567890`, Valid: true}
-	assert.Assert(t, test1.StringOp(StrLimit(5), StrQuote("", "")) == `12345`, test1.StringOp(StrLimit(5), StrQuote("", "")))
+	assert.Assert(t, test1.Strings(StrLimit(5), StrQuote("", "")) == `12345`, test1.Strings(StrLimit(5), StrQuote("", "")))
 
 	test1.Valid = false
-	assert.Assert(t, test1.StringOp(StrLimit(5), StrQuote("", "")) == "null", test1.StringOp(StrLimit(5), StrQuote("", "")))
+	assert.Assert(t, test1.Strings(StrLimit(5), StrQuote("", "")) == "null", test1.Strings(StrLimit(5), StrQuote("", "")))
 }
 
 func TestInt64(t *testing.T) {

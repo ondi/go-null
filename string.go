@@ -51,9 +51,9 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) StringOp(opts ...StringOption) string {
+func (self String) Strings(op ...StringOption) string {
 	if self.Valid {
-		for _, v := range opts {
+		for _, v := range op {
 			self.Data = v(self.Data)
 		}
 		return self.Data
