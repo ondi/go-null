@@ -154,7 +154,7 @@ func (self String) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-// make .String() method available with embedded String struct
+// make .String() method available for embedded String struct
 type Str = String
 
 // StringPrice uses no quotes in string representation
@@ -166,8 +166,7 @@ type StringPrice struct {
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
 	if self.Valid {
-		temp := strconv.Quote(self.Data)
-		return []byte(temp[1 : len(temp)-1]), nil
+		return []byte(self.Data), nil
 	}
 	return []byte("null"), nil
 }
@@ -177,10 +176,6 @@ func (self *StringPrice) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	if self.Data, err = strconv.Unquote(`"` + string(data) + `"`); err != nil {
-		err = fmt.Errorf("%.32s: %w", data, err)
-		return
-	}
-	self.Valid = true
+	self.Data, self.Valid = string(data), true
 	return
 }
