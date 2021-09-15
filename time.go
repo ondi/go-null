@@ -12,15 +12,15 @@ import (
 )
 
 var TimeFormatIn = []string{
-	"2006-01-02T15:04:05Z07:00",
-	"2006-01-02T15:04:05Z0700",
-	"2006-01-02T15:04:05",
-	"2006-01-02T15:04",
-	"2006-01-02",
-	"2006-01-02 15:04:05 -07:00",
-	"2006-01-02 15:04:05 -0700",
-	"2006-01-02 15:04:05",
-	"2006-01-02 15:04",
+	`"2006-01-02T15:04:05Z07:00"`,
+	`"2006-01-02T15:04:05Z0700"`,
+	`"2006-01-02T15:04:05"`,
+	`"2006-01-02T15:04"`,
+	`"2006-01-02"`,
+	`"2006-01-02 15:04:05 -07:00"`,
+	`"2006-01-02 15:04:05 -0700"`,
+	`"2006-01-02 15:04:05"`,
+	`"2006-01-02 15:04"`,
 }
 
 var TimeFormatOut = "2006-01-02T15:04:05Z07:00"
@@ -71,16 +71,12 @@ func (self Time) MarshalJSON() ([]byte, error) {
 }
 
 func (self *Time) UnmarshalJSON(data []byte) (err error) {
-	if len(data) < 2 {
-		return fmt.Errorf("FORMAT")
-	}
-	if data[0] == 'n' || data[1] == '"' {
-		*self = Time{}
+	if len(data) > 1 && (data[0] == 'n' || data[1] == '"') {
+		self.Valid = false
 		return
 	}
-	str := string(data[1 : len(data)-1])
 	for _, layout := range TimeFormatIn {
-		if self.Data, err = time.Parse(layout, str); err == nil {
+		if self.Data, err = time.Parse(layout, string(data)); err == nil {
 			self.Valid = true
 			return
 		}

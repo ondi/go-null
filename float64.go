@@ -37,10 +37,10 @@ func (self *Float64) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	if self.Data, err = strconv.ParseFloat(string(data), 64); err != nil {
+	if self.Data, err = strconv.ParseFloat(string(data), 64); err == nil {
+		self.Valid = true
 		return
 	}
-	self.Valid = true
 	return
 }
 

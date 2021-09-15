@@ -100,11 +100,10 @@ func (self *String) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	if self.Data, err = strconv.Unquote(string(data)); err != nil {
-		err = fmt.Errorf("%.32s: %w", data, err)
+	if self.Data, err = strconv.Unquote(string(data)); err == nil {
+		self.Valid = true
 		return
 	}
-	self.Valid = true
 	return
 }
 

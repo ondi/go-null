@@ -47,10 +47,10 @@ func (self *Bool) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	if self.Data, err = strconv.ParseBool(string(data)); err != nil {
+	if self.Data, err = strconv.ParseBool(string(data)); err == nil {
+		self.Valid = true
 		return
 	}
-	self.Valid = true
 	return
 }
 
