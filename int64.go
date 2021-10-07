@@ -41,12 +41,6 @@ func (self *Int64) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = true
 		return
 	}
-	if l := len(data); l > 2 {
-		if self.Data, err = strconv.ParseInt(string(data[1:l-1]), 0, 64); err == nil {
-			self.Valid = true
-			return
-		}
-	}
 	return
 }
 
