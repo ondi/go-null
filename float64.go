@@ -41,6 +41,7 @@ func (self *Float64) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = true
 		return
 	}
+	err = fmt.Errorf("Float: %s %w", data, err)
 	return
 }
 

@@ -51,6 +51,7 @@ func (self *Bool) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = true
 		return
 	}
+	err = fmt.Errorf("Bool: %s %w", data, err)
 	return
 }
 

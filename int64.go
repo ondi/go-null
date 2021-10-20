@@ -41,6 +41,7 @@ func (self *Int64) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = true
 		return
 	}
+	err = fmt.Errorf("Int64: %s %w", data, err)
 	return
 }
 

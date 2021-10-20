@@ -85,6 +85,7 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 			return
 		}
 	}
+	err = fmt.Errorf("Time: %s %w", data, err)
 	return
 }
 

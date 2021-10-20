@@ -104,6 +104,7 @@ func (self *String) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = true
 		return
 	}
+	err = fmt.Errorf("String: %s %w", data, err)
 	return
 }
 
