@@ -6,6 +6,7 @@ package null
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -90,7 +91,7 @@ func StrQuote(a string, b string) StringOption {
 
 func (self String) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.Quote(self.Data)), nil
+		return json.Marshal(self.Data)
 	}
 	return []byte("null"), nil
 }
@@ -100,7 +101,7 @@ func (self *String) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	if self.Data, err = strconv.Unquote(string(data)); err == nil {
+	if err = json.Unmarshal(data, &self.Data); err == nil {
 		self.Valid = true
 		return
 	}
