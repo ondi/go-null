@@ -92,13 +92,9 @@ type Rows interface {
     Next(dest []Value) error
 }
 
-https://github.com/go-swagger/go-swagger/issues/2229
-
 */
 
 package null
-
-import "database/sql/driver"
 
 type Scanner interface {
 	Scan(interface{}) error
@@ -116,14 +112,4 @@ func ScanVars(s Scanner, name string, m map[string]string) error {
 		return s.Scan(temp)
 	}
 	return s.Scan(nil)
-}
-
-type None struct{}
-
-func (None) Scan(value interface{}) (err error) {
-	return
-}
-
-func (None) Value() (driver.Value, error) {
-	return nil, nil
 }
