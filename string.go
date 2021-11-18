@@ -14,9 +14,11 @@ import (
 	"unicode/utf8"
 )
 
-var Replacer = strings.NewReplacer(
-	"'", "''",
-)
+var StrReplace = func() StringOption {
+	return func(in string) string {
+		return strings.NewReplacer("'", "''").Replace(in)
+	}
+}
 
 // swagger:type string
 type String struct {
@@ -68,12 +70,6 @@ func StrEscape() StringOption {
 	return func(in string) (res string) {
 		res = strconv.Quote(in)
 		return res[1 : len(res)-1]
-	}
-}
-
-func StrReplace() StringOption {
-	return func(in string) string {
-		return Replacer.Replace(in)
 	}
 }
 
