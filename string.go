@@ -14,12 +14,6 @@ import (
 	"unicode/utf8"
 )
 
-var StrReplace = func() StringOption {
-	return func(in string) string {
-		return strings.NewReplacer("'", "''").Replace(in)
-	}
-}
-
 // swagger:type string
 type String struct {
 	// swagger:ignore
@@ -79,9 +73,10 @@ func StrLimit(limit int) StringOption {
 	}
 }
 
-func StrQuote(a string, b string) StringOption {
-	return func(in string) string {
-		return a + in + b
+func StrSqlQuote() StringOption {
+	return func(in string) (res string) {
+		res = strings.NewReplacer("'", "''").Replace(in)
+		return "'" + in + "'"
 	}
 }
 

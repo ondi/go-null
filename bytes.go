@@ -5,17 +5,10 @@
 package null
 
 import (
-	"bytes"
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
 )
-
-var ByteReplace = func() ByteOption {
-	return func(in []byte) []byte {
-		return bytes.ReplaceAll(in, []byte{'\''}, []byte{'\'', '\''})
-	}
-}
 
 // swagger:type string
 type Bytes struct {
@@ -50,16 +43,6 @@ func ByteLimit(limit int) ByteOption {
 			return in[:limit]
 		}
 		return in
-	}
-}
-
-func ByteQuote(a string, b string) ByteOption {
-	return func(in []byte) []byte {
-		var temp bytes.Buffer
-		temp.WriteString(a)
-		temp.Write(in)
-		temp.WriteString(b)
-		return temp.Bytes()
 	}
 }
 
