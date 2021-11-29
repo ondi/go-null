@@ -75,7 +75,7 @@ func StrLimit(limit int) StringOption {
 
 func StrSqlQuote() StringOption {
 	return func(in string) (res string) {
-		res = strings.NewReplacer("'", "''").Replace(in)
+		res = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a").Replace(in)
 		return "'" + res + "'"
 	}
 }
