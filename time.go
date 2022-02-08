@@ -118,6 +118,14 @@ func (self *Time) Scan(value interface{}) (err error) {
 				return
 			}
 		}
+	case []uint8:
+		str := string(v)
+		for _, layout := range TimeFormatIn {
+			if self.Data, err = time.Parse(layout, str); err == nil {
+				self.Valid = true
+				return
+			}
+		}
 	case nil:
 		self.Valid = false
 	default:
