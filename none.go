@@ -8,7 +8,6 @@ import (
 	"database/sql/driver"
 )
 
-// swagger:type boolean
 type None struct{}
 
 func (self None) String() string {
