@@ -14,12 +14,9 @@ import (
 	"unicode/utf8"
 )
 
-// swagger:type string
 type String struct {
-	// swagger:ignore
-	Data string
-	// swagger:ignore
-	Valid bool
+	Data  string `json:"-"`
+	Valid bool   `json:"-"`
 }
 
 func Error(err error) (res String) {
@@ -150,9 +147,7 @@ func (self String) Value() (driver.Value, error) {
 type Str = String
 
 // StringPrice uses no quotes in string representation
-// swagger:type string
 type StringPrice struct {
-	// swagger:ignore
 	Str
 }
 

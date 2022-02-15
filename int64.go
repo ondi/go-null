@@ -10,12 +10,9 @@ import (
 	"strconv"
 )
 
-// swagger:type integer
 type Int64 struct {
-	// swagger:ignore
-	Data int64
-	// swagger:ignore
-	Valid bool
+	Data  int64 `json:"-"`
+	Valid bool  `json:"-"`
 }
 
 func (self Int64) String() string {

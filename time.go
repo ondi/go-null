@@ -25,13 +25,9 @@ var TimeFormatIn = []string{
 
 var TimeFormatOut = "2006-01-02T15:04:05Z07:00"
 
-// swagger:type string
-// swagger:strfmt date-time
 type Time struct {
-	// swagger:ignore
-	Data time.Time
-	// swagger:ignore
-	Valid bool
+	Data  time.Time `json:"-"`
+	Valid bool      `json:"-"`
 }
 
 func (self Time) String() string {
@@ -141,9 +137,7 @@ func (self Time) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-// swagger:type integer
 type TimeUnix struct {
-	// swagger:ignore
 	Time
 }
 
@@ -170,9 +164,7 @@ func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-// swagger:type integer
 type TimeUnixNano struct {
-	// swagger:ignore
 	Time
 }
 

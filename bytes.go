@@ -10,12 +10,9 @@ import (
 	"fmt"
 )
 
-// swagger:type string
 type Bytes struct {
-	// swagger:ignore
-	Data []byte
-	// swagger:ignore
-	Valid bool
+	Data  []byte `json:"-"`
+	Valid bool   `json:"-"`
 }
 
 func (self Bytes) String() string {

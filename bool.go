@@ -10,12 +10,9 @@ import (
 	"strconv"
 )
 
-// swagger:type boolean
 type Bool struct {
-	// swagger:ignore
-	Data bool
-	// swagger:ignore
-	Valid bool
+	Data  bool `json:"-"`
+	Valid bool `json:"-"`
 }
 
 func (self Bool) String() string {

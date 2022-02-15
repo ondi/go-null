@@ -10,12 +10,9 @@ import (
 	"strconv"
 )
 
-// swagger:type number
 type Float64 struct {
-	// swagger:ignore
-	Data float64
-	// swagger:ignore
-	Valid bool
+	Data  float64 `json:"-"`
+	Valid bool    `json:"-"`
 }
 
 func (self Float64) String() string {
