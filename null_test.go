@@ -58,10 +58,10 @@ func TestString03(t *testing.T) {
 
 func TestString04(t *testing.T) {
 	test1 := String{Data: `123"456`, Valid: true}
-	assert.Assert(t, test1.Strings(StrEscape(), StrSqlQuote()) == `'123\"456'`, test1.Strings(StrEscape(), StrSqlQuote()))
+	assert.Assert(t, test1.Strings(StrSqlQuote()) == `'123"456'`, test1.Strings(StrSqlQuote()))
 
 	test1.Valid = false
-	assert.Assert(t, test1.Strings(StrEscape(), StrSqlQuote()) == "null", test1)
+	assert.Assert(t, test1.Strings(StrSqlQuote()) == "null", test1)
 }
 
 func TestString05(t *testing.T) {

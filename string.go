@@ -57,23 +57,21 @@ func (self String) Strings(op ...StringOption) string {
 
 type StringOption func(in string) string
 
-func StrEscape() StringOption {
-	return func(in string) (res string) {
-		res = strconv.Quote(in)
-		return res[1 : len(res)-1]
-	}
-}
-
 func StrLimit(limit int) StringOption {
 	return func(in string) string {
 		return StringLimit(in, limit)
 	}
 }
 
+func StrEscape() StringOption {
+	return func(in string) string {
+		return strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a").Replace(in)
+	}
+}
+
 func StrSqlQuote() StringOption {
-	return func(in string) (res string) {
-		res = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a").Replace(in)
-		return "'" + res + "'"
+	return func(in string) string {
+		return "'" + StrEscape()(in) + "'"
 	}
 }
 
