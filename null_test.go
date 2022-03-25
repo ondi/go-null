@@ -45,6 +45,10 @@ func TestString02(t *testing.T) {
 
 func TestString03(t *testing.T) {
 	var test1 StringPrice
+
+	json.Unmarshal([]byte(`"123.45"`), &test1)
+	assert.Assert(t, test1.String() == "123.45", test1)
+
 	json.Unmarshal([]byte(`123.45`), &test1)
 	assert.Assert(t, test1.String() == "123.45", test1)
 

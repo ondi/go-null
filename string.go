@@ -161,6 +161,10 @@ func (self *StringPrice) UnmarshalJSON(data []byte) (err error) {
 		self.Valid = false
 		return
 	}
-	self.Data, self.Valid = string(data), true
+	if data[0] == '"' && json.Unmarshal(data, &self.Data) == nil {
+		self.Valid = true
+	} else {
+		self.Data, self.Valid = string(data), true
+	}
 	return
 }
