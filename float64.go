@@ -15,9 +15,13 @@ type Float64 struct {
 	Valid bool    `json:"-"`
 }
 
+func FormatFloat(in float64) string {
+	return strconv.FormatFloat(in, 'e', -1, 64)
+}
+
 func (self Float64) String() string {
 	if self.Valid {
-		return strconv.FormatFloat(self.Data, 'e', -1, 64)
+		return FormatFloat(self.Data)
 	}
 	return "null"
 }

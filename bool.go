@@ -15,9 +15,13 @@ type Bool struct {
 	Valid bool `json:"-"`
 }
 
+func FormatBool(in bool) string {
+	return strconv.FormatBool(in)
+}
+
 func (self Bool) String() string {
 	if self.Valid {
-		return strconv.FormatBool(self.Data)
+		return FormatBool(self.Data)
 	}
 	return "null"
 }

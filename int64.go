@@ -15,9 +15,13 @@ type Int64 struct {
 	Valid bool  `json:"-"`
 }
 
+func FormatInt64(in int64) string {
+	return strconv.FormatInt(in, 10)
+}
+
 func (self Int64) String() string {
 	if self.Valid {
-		return strconv.FormatInt(self.Data, 10)
+		return FormatInt64(self.Data)
 	}
 	return "null"
 }
