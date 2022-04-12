@@ -30,25 +30,18 @@ type Time struct {
 	Valid bool      `json:"-"`
 }
 
+func FormatTime(in time.Time) string {
+	return in.Format(TimeFormatOut)
+}
+
 func (self Time) String() string {
 	if self.Valid {
-		return self.Data.Format(TimeFormatOut)
+		return FormatTime(self.Data)
 	}
 	return "null"
 }
 
-func (self Time) Strings(not_valid string, op ...StringOption) (res string) {
-	if self.Valid {
-		res = self.Data.Format(TimeFormatOut)
-		for _, v := range op {
-			res = v(res)
-		}
-		return
-	}
-	return not_valid
-}
-
-func (self Time) StringFormat(not_valid string, format func(time.Time) string, op ...StringOption) (res string) {
+func (self Time) Strings(not_valid string, format func(time.Time) string, op ...StringOption) (res string) {
 	if self.Valid {
 		res = format(self.Data)
 		for _, v := range op {
