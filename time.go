@@ -48,9 +48,9 @@ func (self Time) Strings(op ...StringOption) (res string) {
 	return "null"
 }
 
-func (self Time) StringFormat(format string, op ...StringOption) (res string) {
+func (self Time) StringFormat(format func(time.Time) string, op ...StringOption) (res string) {
 	if self.Valid {
-		res = self.Data.Format(format)
+		res = format(self.Data)
 		for _, v := range op {
 			res = v(res)
 		}
