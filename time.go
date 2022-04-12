@@ -37,7 +37,7 @@ func (self Time) String() string {
 	return "null"
 }
 
-func (self Time) Strings(op ...StringOption) (res string) {
+func (self Time) Strings(not_valid string, op ...StringOption) (res string) {
 	if self.Valid {
 		res = self.Data.Format(TimeFormatOut)
 		for _, v := range op {
@@ -45,10 +45,10 @@ func (self Time) Strings(op ...StringOption) (res string) {
 		}
 		return
 	}
-	return "null"
+	return not_valid
 }
 
-func (self Time) StringFormat(format func(time.Time) string, op ...StringOption) (res string) {
+func (self Time) StringFormat(not_valid string, format func(time.Time) string, op ...StringOption) (res string) {
 	if self.Valid {
 		res = format(self.Data)
 		for _, v := range op {
@@ -56,7 +56,7 @@ func (self Time) StringFormat(format func(time.Time) string, op ...StringOption)
 		}
 		return
 	}
-	return "null"
+	return not_valid
 }
 
 func (self Time) MarshalJSON() ([]byte, error) {

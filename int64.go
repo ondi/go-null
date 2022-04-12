@@ -22,6 +22,13 @@ func (self Int64) String() string {
 	return "null"
 }
 
+func (self Int64) Strings(not_valid string, format func(in int64) string) string {
+	if self.Valid {
+		return format(self.Data)
+	}
+	return not_valid
+}
+
 func (self Int64) MarshalJSON() ([]byte, error) {
 	if self.Valid {
 		return []byte(strconv.FormatInt(self.Data, 10)), nil

@@ -22,14 +22,11 @@ func (self Bool) String() string {
 	return "null"
 }
 
-func (self Bool) StringInt() string {
+func (self Bool) Strings(not_valid string, format func(in bool) string) string {
 	if self.Valid {
-		if self.Data {
-			return "1"
-		}
-		return "0"
+		return format(self.Data)
 	}
-	return "null"
+	return not_valid
 }
 
 func (self Bool) MarshalJSON() ([]byte, error) {

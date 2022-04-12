@@ -45,14 +45,14 @@ func (self String) String() string {
 	return "null"
 }
 
-func (self String) Strings(op ...StringOption) string {
+func (self String) Strings(not_valid string, op ...StringOption) string {
 	if self.Valid {
 		for _, v := range op {
 			self.Data = v(self.Data)
 		}
 		return self.Data
 	}
-	return "null"
+	return not_valid
 }
 
 type StringOption func(in string) string
