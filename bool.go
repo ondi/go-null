@@ -26,9 +26,13 @@ func (self Bool) String() string {
 	return "null"
 }
 
-func (self Bool) Strings(not_valid string, format func(in bool) string) string {
+func (self Bool) Strings(not_valid string, format func(in bool) string, op ...StringOption) (res string) {
 	if self.Valid {
-		return format(self.Data)
+		res = format(self.Data)
+		for _, v := range op {
+			res = v(res)
+		}
+		return
 	}
 	return not_valid
 }

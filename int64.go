@@ -26,9 +26,13 @@ func (self Int64) String() string {
 	return "null"
 }
 
-func (self Int64) Strings(not_valid string, format func(in int64) string) string {
+func (self Int64) Strings(not_valid string, format func(in int64) string, op ...StringOption) (res string) {
 	if self.Valid {
-		return format(self.Data)
+		res = format(self.Data)
+		for _, v := range op {
+			res = v(res)
+		}
+		return
 	}
 	return not_valid
 }

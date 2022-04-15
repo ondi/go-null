@@ -19,13 +19,6 @@ type String struct {
 	Valid bool   `json:"-"`
 }
 
-func Error(err error) (res String) {
-	if err != nil {
-		res.Data, res.Valid = err.Error(), true
-	}
-	return
-}
-
 func StringLimit(in string, limit int) string {
 	if len(in) > limit {
 		for ; limit > 0; limit-- {
