@@ -102,6 +102,8 @@ import (
 	"unicode/utf8"
 )
 
+var replacer = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a", "\\", "\\\\")
+
 func ScanQuery(s sql.Scanner, name string, m map[string][]string) error {
 	if temp, _ := m[name]; len(temp) > 0 {
 		return s.Scan(temp[0])
@@ -147,7 +149,7 @@ func StrLimit(limit int) StringOption {
 
 func StrEscape() StringOption {
 	return func(in string) string {
-		return strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a", "\\", "\\\\").Replace(in)
+		return replacer.Replace(in)
 	}
 }
 
