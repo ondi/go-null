@@ -25,13 +25,13 @@ var TimeFormatIn = []string{
 
 var TimeFormatOut = "2006-01-02T15:04:05Z07:00"
 
+func FormatTime(in time.Time) string {
+	return in.Format(TimeFormatOut)
+}
+
 type Time struct {
 	Data  time.Time `json:"-"`
 	Valid bool      `json:"-"`
-}
-
-func FormatTime(in time.Time) string {
-	return in.Format(TimeFormatOut)
 }
 
 func (self Time) String() string {
@@ -54,7 +54,7 @@ func (self Time) Strings(not_valid string, format func(time.Time) string, op ...
 
 func (self Time) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(`"` + self.Data.Format(TimeFormatOut) + `"`), nil
+		return []byte(`"` + FormatTime(self.Data) + `"`), nil
 	}
 	return []byte("null"), nil
 }
@@ -136,21 +136,21 @@ type TimeUnix struct {
 
 func (self TimeUnix) String() string {
 	if self.Valid {
-		return strconv.FormatInt(self.Data.Unix(), 10)
+		return FormatInt(self.Data.Unix())
 	}
 	return "null"
 }
 
 func (self TimeUnix) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.FormatInt(self.Data.Unix(), 10)), nil
+		return []byte(FormatInt(self.Data.Unix())), nil
 	}
 	return []byte("null"), nil
 }
 
 func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
-	var res int64
-	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
+	res, err := strconv.ParseInt(string(data), 0, 64)
+	if err != nil {
 		return
 	}
 	self.Data, self.Valid = time.Unix(res, 0), true
@@ -163,21 +163,21 @@ type TimeUnixNano struct {
 
 func (self TimeUnixNano) String() string {
 	if self.Valid {
-		return strconv.FormatInt(self.Data.UnixNano(), 10)
+		return FormatInt(self.Data.UnixNano())
 	}
 	return "null"
 }
 
 func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.FormatInt(self.Data.UnixNano(), 10)), nil
+		return []byte(FormatInt(self.Data.UnixNano())), nil
 	}
 	return []byte("null"), nil
 }
 
 func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
-	var res int64
-	if res, err = strconv.ParseInt(string(data), 0, 64); err != nil {
+	res, err := strconv.ParseInt(string(data), 0, 64)
+	if err != nil {
 		return
 	}
 	self.Data, self.Valid = time.Unix(0, res), true

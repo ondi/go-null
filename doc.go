@@ -96,20 +96,63 @@ type Rows interface {
 
 package null
 
-type Scanner interface {
-	Scan(interface{}) error
-}
+import (
+	"database/sql"
+	"strings"
+	"unicode/utf8"
+)
 
-func ScanQuery(s Scanner, name string, m map[string][]string) error {
+func ScanQuery(s sql.Scanner, name string, m map[string][]string) error {
 	if temp, _ := m[name]; len(temp) > 0 {
 		return s.Scan(temp[0])
 	}
 	return s.Scan(nil)
 }
 
-func ScanVars(s Scanner, name string, m map[string]string) error {
+func ScanVars(s sql.Scanner, name string, m map[string]string) error {
 	if temp, ok := m[name]; ok {
 		return s.Scan(temp)
 	}
 	return s.Scan(nil)
+}
+
+type Scanners []sql.Scanner
+
+func (self Scanners) Scan(in interface{}) (err error) {
+	for _, v := range self {
+		v.Scan(in)
+	}
+	return
+}
+
+func StringLimit(in string, limit int) string {
+	if len(in) > limit {
+		for ; limit > 0; limit-- {
+			if r, _ := utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
+				break
+			}
+		}
+		return in[:limit]
+	}
+	return in
+}
+
+type StringOption func(in string) string
+
+func StrLimit(limit int) StringOption {
+	return func(in string) string {
+		return StringLimit(in, limit)
+	}
+}
+
+func StrEscape() StringOption {
+	return func(in string) string {
+		return strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a", "\\", "\\\\").Replace(in)
+	}
+}
+
+func StrSqlQuote() StringOption {
+	return func(in string) string {
+		return "'" + StrEscape()(in) + "'"
+	}
 }

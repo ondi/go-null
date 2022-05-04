@@ -10,13 +10,13 @@ import (
 	"strconv"
 )
 
+func FormatBool(in bool) string {
+	return strconv.FormatBool(in)
+}
+
 type Bool struct {
 	Data  bool `json:"-"`
 	Valid bool `json:"-"`
-}
-
-func FormatBool(in bool) string {
-	return strconv.FormatBool(in)
 }
 
 func (self Bool) String() string {
@@ -39,7 +39,7 @@ func (self Bool) Strings(not_valid string, format func(in bool) string, op ...St
 
 func (self Bool) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.FormatBool(self.Data)), nil
+		return []byte(FormatBool(self.Data)), nil
 	}
 	return []byte("null"), nil
 }

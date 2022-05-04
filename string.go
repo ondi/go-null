@@ -8,27 +8,12 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"strings"
 	"time"
-	"unicode/utf8"
 )
 
 type String struct {
 	Data  string `json:"-"`
 	Valid bool   `json:"-"`
-}
-
-func StringLimit(in string, limit int) string {
-	if len(in) > limit {
-		for ; limit > 0; limit-- {
-			if r, _ := utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
-				break
-			}
-		}
-		return in[:limit]
-	}
-	return in
 }
 
 func (self String) String() string {
@@ -46,26 +31,6 @@ func (self String) Strings(not_valid string, op ...StringOption) string {
 		return self.Data
 	}
 	return not_valid
-}
-
-type StringOption func(in string) string
-
-func StrLimit(limit int) StringOption {
-	return func(in string) string {
-		return StringLimit(in, limit)
-	}
-}
-
-func StrEscape() StringOption {
-	return func(in string) string {
-		return strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a", "\\", "\\\\").Replace(in)
-	}
-}
-
-func StrSqlQuote() StringOption {
-	return func(in string) string {
-		return "'" + StrEscape()(in) + "'"
-	}
 }
 
 func (self String) MarshalJSON() ([]byte, error) {
@@ -108,9 +73,9 @@ func (self *String) Scan(value interface{}) (err error) {
 	case []uint8:
 		self.Data, self.Valid = string(v), true
 	case int64:
-		self.Data, self.Valid = strconv.FormatInt(v, 10), true
+		self.Data, self.Valid = FormatInt(v), true
 	case float64:
-		self.Data, self.Valid = strconv.FormatFloat(v, 'e', -1, 64), true
+		self.Data, self.Valid = FormatFloat(v), true
 	case time.Time:
 		self.Data, self.Valid = v.Format(TimeFormatOut), true
 	case bool:

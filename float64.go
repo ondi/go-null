@@ -10,13 +10,13 @@ import (
 	"strconv"
 )
 
+func FormatFloat(in float64) string {
+	return strconv.FormatFloat(in, 'e', -1, 64)
+}
+
 type Float64 struct {
 	Data  float64 `json:"-"`
 	Valid bool    `json:"-"`
-}
-
-func FormatFloat(in float64) string {
-	return strconv.FormatFloat(in, 'e', -1, 64)
 }
 
 func (self Float64) String() string {
@@ -39,7 +39,7 @@ func (self Float64) Strings(not_valid string, format func(in float64) string, op
 
 func (self Float64) MarshalJSON() ([]byte, error) {
 	if self.Valid {
-		return []byte(strconv.FormatFloat(self.Data, 'e', -1, 64)), nil
+		return []byte(FormatFloat(self.Data)), nil
 	}
 	return []byte("null"), nil
 }
