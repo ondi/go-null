@@ -100,10 +100,10 @@ func (self String) Value() (driver.Value, error) {
 }
 
 // make String() method available for embedded String type
-type str = String
+type Str = String
 
 type StringPrice struct {
-	str
+	Str
 }
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
