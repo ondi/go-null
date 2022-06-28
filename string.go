@@ -99,12 +99,11 @@ func (self String) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-// make .String() method available for embedded String struct
-type Str = String
+// make String() method available for embedded String type
+type str = String
 
-// StringPrice uses no quotes in string representation
 type StringPrice struct {
-	Str
+	str
 }
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
