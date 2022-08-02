@@ -8,6 +8,8 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"strconv"
+
+	"gopkg.in/yaml.v3"
 )
 
 func FormatInt(in int64) string {
@@ -57,9 +59,9 @@ func (self *Int64) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-func (self *Int64) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (self *Int64) UnmarshalYAML(value *yaml.Node) (err error) {
 	var temp *int64
-	if err = unmarshal(&temp); err != nil {
+	if err = value.Decode(temp); err != nil {
 		return
 	}
 	if temp != nil {

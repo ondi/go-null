@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 var TimeFormatIn = []string{
@@ -78,17 +80,17 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-func (self *Time) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
-	var temp string
-	if err = unmarshal(&temp); err != nil {
+func (self *Time) UnmarshalYAML(value *yaml.Node) (err error) {
+	var temp *string
+	if err = value.Decode(temp); err != nil {
 		return
 	}
-	if len(temp) == 0 || temp == "null" {
-		*self = Time{}
+	if temp == nil {
+		self.Valid = false
 		return
 	}
 	for _, layout := range TimeFormatIn {
-		if self.Data, err = time.Parse(layout, temp); err == nil {
+		if self.Data, err = time.Parse(layout, *temp); err == nil {
 			self.Valid = true
 			return
 		}

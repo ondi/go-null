@@ -8,6 +8,8 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"strconv"
+
+	"gopkg.in/yaml.v3"
 )
 
 func FormatFloat(in float64) string {
@@ -57,9 +59,9 @@ func (self *Float64) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-func (self *Float64) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (self *Float64) UnmarshalYAML(value *yaml.Node) (err error) {
 	var temp *float64
-	if err = unmarshal(&temp); err != nil {
+	if err = value.Decode(temp); err != nil {
 		return
 	}
 	if temp != nil {

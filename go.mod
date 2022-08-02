@@ -2,7 +2,10 @@ module github.com/ondi/go-null
 
 go 1.18
 
-require gotest.tools v2.2.0+incompatible
+require (
+	gopkg.in/yaml.v3 v3.0.1
+	gotest.tools v2.2.0+incompatible
+)
 
 require (
 	github.com/google/go-cmp v0.5.6 // indirect
