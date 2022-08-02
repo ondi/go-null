@@ -82,7 +82,7 @@ func (self *Time) UnmarshalJSON(data []byte) (err error) {
 
 func (self *Time) UnmarshalYAML(value *yaml.Node) (err error) {
 	var temp *string
-	if err = value.Decode(temp); err != nil {
+	if err = value.Decode(&temp); err != nil {
 		return
 	}
 	if temp == nil {

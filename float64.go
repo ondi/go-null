@@ -61,7 +61,7 @@ func (self *Float64) UnmarshalJSON(data []byte) (err error) {
 
 func (self *Float64) UnmarshalYAML(value *yaml.Node) (err error) {
 	var temp *float64
-	if err = value.Decode(temp); err != nil {
+	if err = value.Decode(&temp); err != nil {
 		return
 	}
 	if temp != nil {
