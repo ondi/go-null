@@ -147,7 +147,7 @@ func StrLimit(limit int) StringOption {
 	}
 }
 
-func StrEscape() StringOption {
+func StrReplace() StringOption {
 	return func(in string) string {
 		return replacer.Replace(in)
 	}
@@ -155,6 +155,6 @@ func StrEscape() StringOption {
 
 func StrSqlQuote() StringOption {
 	return func(in string) string {
-		return "'" + StrEscape()(in) + "'"
+		return "'" + StrReplace()(in) + "'"
 	}
 }
