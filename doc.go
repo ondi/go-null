@@ -175,8 +175,18 @@ func PowInt64(x int64, n int64) (res int64) {
 	return x * res * res
 }
 
-func Zeros(in int64) (res int64) {
-	for in /= 10; in != 0; in /= 10 {
+func Degree(in int64, by int64) (res int64) {
+	for in /= by; in != 0; in /= by {
+		res++
+	}
+	return
+}
+
+func LeadZero(in string) (res int64) {
+	for _, v := range in {
+		if v != '0' {
+			return
+		}
 		res++
 	}
 	return
@@ -200,7 +210,7 @@ func StringPriceToInt64(in string, mul int64) (res int64, err error) {
 		err = errors.New("fraction format error")
 		return
 	}
-	shift := Zeros(mul) - Zeros(frac) - 1
+	shift := Degree(mul, 10) - Degree(frac, 10) - LeadZero(in[ix+1:]) - 1
 	if shift < 0 {
 		frac /= PowInt64(10, -shift)
 	} else {
