@@ -98,6 +98,8 @@ package null
 
 import (
 	"database/sql"
+	"errors"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -157,4 +159,57 @@ func StrSqlQuote() StringOption {
 	return func(in string) string {
 		return "'" + StrReplace()(in) + "'"
 	}
+}
+
+func PowInt64(x int64, n int64) (res int64) {
+	if n == 0 {
+		return 1
+	}
+	if n == 1 {
+		return x
+	}
+	res = PowInt64(x, n/2)
+	if n%2 == 0 {
+		return res * res
+	}
+	return x * res * res
+}
+
+func Zeros(in int64) (res int64) {
+	for in /= 10; in != 0; in /= 10 {
+		res++
+	}
+	return
+}
+
+func StringPriceToInt64(in string, mul int64) (res int64, err error) {
+	ix := strings.Index(in, ".")
+	if ix == -1 {
+		res, err = strconv.ParseInt(in, 10, 64)
+		res = res * mul
+		return
+	}
+	if res, err = strconv.ParseInt(in[:ix], 10, 64); err != nil {
+		return
+	}
+	frac, err := strconv.ParseInt(in[ix+1:], 10, 64)
+	if err != nil {
+		return
+	}
+	if frac < 0 {
+		err = errors.New("fraction format error")
+		return
+	}
+	shift := Zeros(mul) - Zeros(frac) - 1
+	if shift < 0 {
+		frac /= PowInt64(10, -shift)
+	} else {
+		frac *= PowInt64(10, shift)
+	}
+	if res < 0 {
+		res = res*mul - frac
+	} else {
+		res = res*mul + frac
+	}
+	return
 }
