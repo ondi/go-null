@@ -151,6 +151,10 @@ func (self TimeUnix) MarshalJSON() ([]byte, error) {
 }
 
 func (self *TimeUnix) UnmarshalJSON(data []byte) (err error) {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
+		return
+	}
 	res, err := strconv.ParseInt(string(data), 0, 64)
 	if err != nil {
 		return
@@ -178,6 +182,10 @@ func (self TimeUnixNano) MarshalJSON() ([]byte, error) {
 }
 
 func (self *TimeUnixNano) UnmarshalJSON(data []byte) (err error) {
+	if len(data) == 0 || data[0] == 'n' {
+		self.Valid = false
+		return
+	}
 	res, err := strconv.ParseInt(string(data), 0, 64)
 	if err != nil {
 		return
