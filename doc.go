@@ -104,7 +104,7 @@ import (
 	"unicode/utf8"
 )
 
-var replacer = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a", "\\", "\\\\")
+var replacer = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a")
 
 func ScanQuery(s sql.Scanner, name string, m map[string][]string) error {
 	if temp, _ := m[name]; len(temp) > 0 {
