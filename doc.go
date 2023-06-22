@@ -96,15 +96,7 @@ type Rows interface {
 
 package null
 
-import (
-	"database/sql"
-	"errors"
-	"strconv"
-	"strings"
-	"unicode/utf8"
-)
-
-var replacer = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a")
+import "database/sql"
 
 func ScanQuery(s sql.Scanner, name string, m map[string][]string) error {
 	if temp, _ := m[name]; len(temp) > 0 {
@@ -125,101 +117,6 @@ type Scanners []sql.Scanner
 func (self Scanners) Scan(in interface{}) (err error) {
 	for _, v := range self {
 		v.Scan(in)
-	}
-	return
-}
-
-func StringLimit(in string, limit int) string {
-	if len(in) > limit {
-		for ; limit > 0; limit-- {
-			if r, _ := utf8.DecodeLastRuneInString(in[:limit]); r != utf8.RuneError {
-				break
-			}
-		}
-		return in[:limit]
-	}
-	return in
-}
-
-type StringOption func(in string) string
-
-func StrLimit(limit int) StringOption {
-	return func(in string) string {
-		return StringLimit(in, limit)
-	}
-}
-
-func StrReplace() StringOption {
-	return func(in string) string {
-		return replacer.Replace(in)
-	}
-}
-
-func StrSqlQuote() StringOption {
-	return func(in string) string {
-		return "'" + StrReplace()(in) + "'"
-	}
-}
-
-func PowInt64(x int64, n int64) (res int64) {
-	if n == 0 {
-		return 1
-	}
-	if n == 1 {
-		return x
-	}
-	res = PowInt64(x, n/2)
-	if n%2 == 0 {
-		return res * res
-	}
-	return x * res * res
-}
-
-func Degree(in int64, by int64) (res int64) {
-	for in /= by; in != 0; in /= by {
-		res++
-	}
-	return
-}
-
-func LeadZero(in string) (res int64) {
-	for _, v := range in {
-		if v != '0' {
-			return
-		}
-		res++
-	}
-	return
-}
-
-func StringPriceToInt64(in string, mul int64) (res int64, err error) {
-	ix := strings.Index(in, ".")
-	if ix == -1 {
-		res, err = strconv.ParseInt(in, 10, 64)
-		res = res * mul
-		return
-	}
-	if res, err = strconv.ParseInt(in[:ix], 10, 64); err != nil {
-		return
-	}
-	frac, err := strconv.ParseInt(in[ix+1:], 10, 64)
-	if err != nil {
-		return
-	}
-	if frac < 0 {
-		err = errors.New("fraction format error")
-		return
-	}
-	shift := Degree(mul, 10) - Degree(frac, 10) - LeadZero(in[ix+1:]) - 1
-	if shift < 0 {
-		frac /= PowInt64(10, -shift)
-	} else {
-		frac *= PowInt64(10, shift)
-	}
-	if res < 0 {
-		res = res*mul - frac
-	} else {
-		res = res*mul + frac
 	}
 	return
 }

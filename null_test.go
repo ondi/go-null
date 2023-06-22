@@ -62,10 +62,10 @@ func TestString03(t *testing.T) {
 
 func TestString04(t *testing.T) {
 	test1 := String{Data: `123"456`, Valid: true}
-	assert.Assert(t, test1.Strings("null", StrSqlQuote()) == `'123"456'`, test1.Strings("null", StrSqlQuote()))
+	assert.Assert(t, test1.Strings("null", StrQuote1) == `'123"456'`, test1.Strings("null", StrQuote1))
 
 	test1.Valid = false
-	assert.Assert(t, test1.Strings("null", StrSqlQuote()) == "null", test1)
+	assert.Assert(t, test1.Strings("null", StrQuote1) == "null", test1)
 }
 
 func TestString05(t *testing.T) {
@@ -230,6 +230,6 @@ func TestScan01(t *testing.T) {
 }
 
 func TestLimit01(t *testing.T) {
-	a := StringLimit("你好嗎", 8)
+	a := StrLimit(8)("你好嗎")
 	assert.Assert(t, a == "你好", a)
 }
