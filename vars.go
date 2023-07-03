@@ -6,6 +6,7 @@ package null
 
 import (
 	"errors"
+	"net/url"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -42,6 +43,10 @@ func StrQuote1(in string) string {
 
 func StrQuote2(in string) string {
 	return "'" + StrReplace2(in) + "'"
+}
+
+func StrUrlEscape(in string) string {
+	return url.QueryEscape(in)
 }
 
 func PowInt64(x int64, n int64) (res int64) {
