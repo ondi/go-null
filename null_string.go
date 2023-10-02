@@ -101,7 +101,7 @@ func (self String) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-// make String() method available for embedded String type
+// to make String() method available for embedded String type
 type Str = String
 
 type StringPrice struct {
@@ -110,7 +110,7 @@ type StringPrice struct {
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
 	if self.Valid {
-		return []byte(self.Data), nil
+		return json.Marshal(self.Data)
 	}
 	return []byte("null"), nil
 }
