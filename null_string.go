@@ -110,7 +110,7 @@ type StringPrice struct {
 
 func (self StringPrice) MarshalJSON() (res []byte, err error) {
 	if self.Valid {
-		return json.Marshal(self.Data)
+		return []byte(self.Data), nil
 	}
 	return []byte("null"), nil
 }
