@@ -92,11 +92,11 @@ func TestInt64(t *testing.T) {
 func TestFloat64(t *testing.T) {
 	var test1 Float64
 	json.Unmarshal([]byte("5.5"), &test1)
-	assert.Assert(t, test1.String() == "5.5e+00")
+	assert.Assert(t, test1.String() == "5.5")
 
 	temp, err := json.Marshal(test1)
 	assert.NilError(t, err)
-	assert.Assert(t, string(temp) == "5.5e+00", test1)
+	assert.Assert(t, string(temp) == "5.5", test1)
 
 	json.Unmarshal([]byte("null"), &test1)
 	assert.Assert(t, test1.String() == "null")

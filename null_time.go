@@ -36,6 +36,10 @@ type Time struct {
 	Valid bool      `json:"-"`
 }
 
+func (self Time) IsZero() bool {
+	return self.Valid
+}
+
 func (self Time) String() string {
 	if self.Valid {
 		return FormatTime(self.Data)

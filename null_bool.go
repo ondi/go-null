@@ -21,6 +21,10 @@ type Bool struct {
 	Valid bool `json:"-"`
 }
 
+func (self Bool) IsZero() bool {
+	return self.Valid
+}
+
 func (self Bool) String() string {
 	if self.Valid {
 		return FormatBool(self.Data)

@@ -21,6 +21,10 @@ type Int64 struct {
 	Valid bool  `json:"-"`
 }
 
+func (self Int64) IsZero() bool {
+	return self.Valid
+}
+
 func (self Int64) String() string {
 	if self.Valid {
 		return FormatInt(self.Data)

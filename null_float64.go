@@ -13,12 +13,16 @@ import (
 )
 
 func FormatFloat(in float64) string {
-	return strconv.FormatFloat(in, 'e', -1, 64)
+	return strconv.FormatFloat(in, 'g', -1, 64)
 }
 
 type Float64 struct {
 	Data  float64 `json:"-"`
 	Valid bool    `json:"-"`
+}
+
+func (self Float64) IsZero() bool {
+	return self.Valid
 }
 
 func (self Float64) String() string {
