@@ -6,6 +6,7 @@ package null
 
 import (
 	"errors"
+	"io"
 	"net/url"
 	"strconv"
 	"strings"
@@ -17,24 +18,34 @@ var StrReplace2 = strings.NewReplacer("'", "''", "\x00", "\\x00", "\x1a", "\\x1a
 
 type StringOption func(in string) string
 
-type Limit_t struct {
-	Bytes int
+type LimitWriter_t struct {
+	Out     io.Writer
+	Limit   int
+	written int
 }
 
-func (self Limit_t) Limit(in string) string {
-	if len(in) > self.Bytes {
-		for ; self.Bytes > 0; self.Bytes-- {
-			if r, _ := utf8.DecodeLastRuneInString(in[:self.Bytes]); r != utf8.RuneError {
+func (self *LimitWriter_t) Write(p []byte) (n int, err error) {
+	if n = self.Limit - self.written; n > len(p) {
+		n, err = self.Out.Write(p)
+	} else {
+		for ; n > 0; n-- {
+			if r, _ := utf8.DecodeLastRune(p[:n]); r != utf8.RuneError {
 				break
 			}
 		}
-		return in[:self.Bytes]
+		n, err = self.Out.Write(p[:n])
 	}
-	return in
+	self.written += n
+	return
 }
 
 func StrLimit(limit int) StringOption {
-	return Limit_t{Bytes: limit}.Limit
+	var sb strings.Builder
+	w := &LimitWriter_t{Out: &sb, Limit: limit}
+	return func(in string) string {
+		io.WriteString(w, in)
+		return sb.String()
+	}
 }
 
 func StrQuote1(in string) string {
