@@ -115,8 +115,10 @@ func ScanVars(s sql.Scanner, name string, m map[string]string) error {
 type Scanners []sql.Scanner
 
 func (self Scanners) Scan(in interface{}) (err error) {
-	for _, v := range self {
-		v.Scan(in)
+	for i := range self {
+		if err = self[i].Scan(in); err != nil {
+			return
+		}
 	}
 	return
 }
