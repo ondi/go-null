@@ -5,10 +5,9 @@
 package null
 
 import (
-	"errors"
 	"io"
+	"math/big"
 	"net/url"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -59,65 +58,13 @@ func StrUrlEscape(in string) string {
 	return url.QueryEscape(in)
 }
 
-func PowInt64(x int64, n int64) (res int64) {
-	if n == 0 {
-		return 1
-	}
-	if n == 1 {
-		return x
-	}
-	res = PowInt64(x, n/2)
-	if n%2 == 0 {
-		return res * res
-	}
-	return x * res * res
-}
-
-func Degree(in int64, by int64) (res int64) {
-	for in /= by; in != 0; in /= by {
-		res++
-	}
-	return
-}
-
-func LeadZero(in string) (res int64) {
-	for _, v := range in {
-		if v != '0' {
-			return
-		}
-		res++
-	}
-	return
-}
-
-func StringPriceToInt64(in string, mul int64) (res int64, err error) {
-	ix := strings.Index(in, ".")
-	if ix == -1 {
-		res, err = strconv.ParseInt(in, 10, 64)
-		res = res * mul
+func StringToInt64(in string, multiply float64) (res int64, ok bool) {
+	f, ok := new(big.Float).SetString(in)
+	if !ok {
 		return
 	}
-	if res, err = strconv.ParseInt(in[:ix], 10, 64); err != nil {
-		return
-	}
-	frac, err := strconv.ParseInt(in[ix+1:], 10, 64)
-	if err != nil {
-		return
-	}
-	if frac < 0 {
-		err = errors.New("fraction format error")
-		return
-	}
-	shift := Degree(mul, 10) - Degree(frac, 10) - LeadZero(in[ix+1:]) - 1
-	if shift < 0 {
-		frac /= PowInt64(10, -shift)
-	} else {
-		frac *= PowInt64(10, shift)
-	}
-	if res < 0 {
-		res = res*mul - frac
-	} else {
-		res = res*mul + frac
-	}
+	f.SetPrec(big.MaxPrec)
+	f.Mul(f, new(big.Float).SetFloat64(multiply))
+	res, _ = f.Int64()
 	return
 }
