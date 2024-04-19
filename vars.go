@@ -63,7 +63,7 @@ func StringToInt64(in string, multiply float64) (res int64, ok bool) {
 	if !ok {
 		return
 	}
-	f.SetPrec(big.MaxPrec)
+	// f.SetPrec(big.MaxPrec)
 	f.Mul(f, new(big.Float).SetFloat64(multiply))
 	res, _ = f.Int64()
 	return
