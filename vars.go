@@ -6,7 +6,6 @@ package null
 
 import (
 	"io"
-	"math/big"
 	"net/url"
 	"strings"
 	"unicode/utf8"
@@ -56,15 +55,4 @@ func StrQuote2(in string) string {
 
 func StrUrlEscape(in string) string {
 	return url.QueryEscape(in)
-}
-
-func StringToInt64(in string, multiply float64) (res int64, ok bool) {
-	f, ok := new(big.Float).SetString(in)
-	if !ok {
-		return
-	}
-	// f.SetPrec(big.MaxPrec)
-	f.Mul(f, new(big.Float).SetFloat64(multiply))
-	res, _ = f.Int64()
-	return
 }

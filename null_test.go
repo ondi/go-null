@@ -233,3 +233,66 @@ func TestLimit01(t *testing.T) {
 	a := StrLimit(8)("你好嗎")
 	assert.Assert(t, a == "你好", a)
 }
+
+func TestParseFloat01(t *testing.T) {
+	var res Float_t
+
+	res = ParseFloat("")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("+")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("0")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("00")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("001")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-0")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("+0")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-1")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("+1")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-1.")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("+1.")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.000")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001e")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001e1")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001e-1")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001e10")
+	t.Logf("res=%+v", res)
+
+	res = ParseFloat("-123.0001e-10")
+	t.Logf("res=%+v", res)
+
+	// assert.Assert(t, res.IntPart == 123, res)
+}
