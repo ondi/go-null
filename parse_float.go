@@ -177,7 +177,7 @@ func ParseFloat(in string) (res Float_t) {
 	return
 }
 
-// https://stackoverflow.com/questions/199333/how-do-i-detect-unsigned-integer-overflow
+// https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
 
 func Add64(a int64, b int64) (int64, bool) {
 	if b > 0 && a > math.MaxInt64-b {
@@ -200,14 +200,27 @@ func Sub64(a int64, b int64) (int64, bool) {
 }
 
 func Mul64(a int64, b int64) (int64, bool) {
-	if b == 0 {
-		return 0, true
+	if a > 0 {
+		if b > 0 {
+			if a > math.MaxInt64/b {
+				return a, false
+			}
+		} else {
+			if b < math.MinInt64/a {
+				return a, false
+			}
+		}
 	}
-	if a > math.MaxInt64/b {
-		return a, false
-	}
-	if a < math.MinInt64/b {
-		return a, false
+	if a < 0 {
+		if b > 0 {
+			if a < math.MinInt64/b {
+				return a, false
+			}
+		} else {
+			if b < math.MaxInt64/a {
+				return a, false
+			}
+		}
 	}
 	return a * b, true
 }
