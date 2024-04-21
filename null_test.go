@@ -238,65 +238,93 @@ func TestParseFloat01(t *testing.T) {
 	var res Float_t
 
 	res = ParseFloat("")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) > 0, res)
 
 	res = ParseFloat("-")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) > 0, res)
 
 	res = ParseFloat("+")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) > 0, res)
 
 	res = ParseFloat("0")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
 	res = ParseFloat("00")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
 	res = ParseFloat("001")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
 
 	res = ParseFloat("-0")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
 	res = ParseFloat("+0")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
 	res = ParseFloat("-1")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
 	res = ParseFloat("+1")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
 
 	res = ParseFloat("-1.")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
 	res = ParseFloat("+1.")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
+
+	res = ParseFloat("-1.e")
+	assert.Assert(t, len(res.Error) > 0, res)
+
+	res = ParseFloat("-1.e0")
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
 	res = ParseFloat("-123.000")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -123000 && res.Exp == -3, res)
 
 	res = ParseFloat("-123.0001")
-	t.Logf("res=%+v", res)
-
-	res = ParseFloat("-123.0001e")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1230001 && res.Exp == -4, res)
 
 	res = ParseFloat("-123.0001e1")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1230001 && res.Exp == -3, res)
 
 	res = ParseFloat("-123.0001e-1")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1230001 && res.Exp == -5, res)
 
 	res = ParseFloat("-123.0001e10")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1230001 && res.Exp == 6, res)
 
 	res = ParseFloat("-123.0001e-10")
+	t.Logf("res=%v", res.String())
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == -1230001 && res.Exp == -14, res)
+
+	res = ParseFloat("9223372036854775807")
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 9223372036854775807 && res.Exp == 0, res)
+
+	res = ParseFloat("922337203685477580.7")
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 9223372036854775807 && res.Exp == -1, res)
+
+	res = ParseFloat("922337203685477580.8")
 	t.Logf("res=%+v", res)
 
-	// 9223372036854775807
 	res = ParseFloat("9223372036854775808")
 	t.Logf("res=%+v", res)
-
-	// assert.Assert(t, res.IntPart == 123, res)
 }
