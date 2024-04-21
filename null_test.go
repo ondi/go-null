@@ -294,5 +294,9 @@ func TestParseFloat01(t *testing.T) {
 	res = ParseFloat("-123.0001e-10")
 	t.Logf("res=%+v", res)
 
+	// 9223372036854775807
+	res = ParseFloat("9223372036854775808")
+	t.Logf("res=%+v", res)
+
 	// assert.Assert(t, res.IntPart == 123, res)
 }
