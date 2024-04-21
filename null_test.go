@@ -310,7 +310,6 @@ func TestParseFloat01(t *testing.T) {
 	assert.Assert(t, res.Int == -1230001 && res.Exp == 6, res)
 
 	res = ParseFloat("-123.0001e-10")
-	t.Logf("res=%v", res.String())
 	assert.Assert(t, len(res.Error) == 0, res)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == -14, res)
 
@@ -323,8 +322,15 @@ func TestParseFloat01(t *testing.T) {
 	assert.Assert(t, res.Int == 9223372036854775807 && res.Exp == -1, res)
 
 	res = ParseFloat("922337203685477580.8")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) > 0, res)
 
 	res = ParseFloat("9223372036854775808")
-	t.Logf("res=%+v", res)
+	assert.Assert(t, len(res.Error) > 0, res)
+
+	res = ParseFloat("95.98")
+	assert.Assert(t, len(res.Error) == 0, res)
+	assert.Assert(t, res.Int == 9598 && res.Exp == -2, res)
+
+	res.Exp += 2
+	t.Logf("int64=%v, str=%v", res.Int64(), res.String())
 }

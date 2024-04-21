@@ -162,7 +162,17 @@ func (self *Float_t) final() {
 }
 
 func (self *Float_t) String() string {
+	if self.Exp == 0 {
+		return fmt.Sprintf("%d", self.Int)
+	}
 	return fmt.Sprintf("%de%d", self.Int, self.Exp)
+}
+
+func (self *Float_t) Int64() int64 {
+	if self.Exp < 0 {
+		return self.Int / Width10(-self.Exp)
+	}
+	return self.Int * Width10(self.Exp)
 }
 
 func ParseFloat(in string) (res Float_t) {
@@ -174,6 +184,14 @@ func ParseFloat(in string) (res Float_t) {
 		next_state = next_state(last_rune, last_size)
 	}
 	res.final()
+	return
+}
+
+func Width10(in int64) (res int64) {
+	res = 1
+	for i := int64(0); i < in; i++ {
+		res *= 10
+	}
 	return
 }
 
