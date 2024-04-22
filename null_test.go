@@ -235,100 +235,101 @@ func TestLimit01(t *testing.T) {
 }
 
 func TestParseFloat01(t *testing.T) {
+	var err error
 	var res Decimal_t
 
-	res = ParseFloat("")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("-")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("-")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("+")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("+")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("0")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("0")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
-	res = ParseFloat("00")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("00")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
-	res = ParseFloat("001")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("001")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
 
-	res = ParseFloat("-0")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-0")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
-	res = ParseFloat("+0")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("+0")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 0 && res.Exp == 0, res)
 
-	res = ParseFloat("-1")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-1")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
-	res = ParseFloat("+1")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("+1")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
 
-	res = ParseFloat("-1.")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-1.")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
-	res = ParseFloat("+1.")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("+1.")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 1 && res.Exp == 0, res)
 
-	res = ParseFloat("-1.e")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("-1.e")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("-1.e0")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-1.e0")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1 && res.Exp == 0, res)
 
-	res = ParseFloat("-123.000")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.000")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -123000 && res.Exp == -3, res)
 
-	res = ParseFloat("-123.0001")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.0001")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == -4, res)
 
-	res = ParseFloat("-123.0001e1")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.0001e1")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == -3, res)
 
-	res = ParseFloat("-123.0001e-1")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.0001e-1")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == -5, res)
 
-	res = ParseFloat("-123.0001e10")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.0001e10")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == 6, res)
 
-	res = ParseFloat("-123.0001e-10")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("-123.0001e-10")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == -1230001 && res.Exp == -14, res)
 
-	res = ParseFloat("9223372036854775807")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("9223372036854775807")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 9223372036854775807 && res.Exp == 0, res)
 
-	res = ParseFloat("922337203685477580.7")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("922337203685477580.7")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 9223372036854775807 && res.Exp == -1, res)
 
-	res = ParseFloat("922337203685477580.8")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("922337203685477580.8")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("9223372036854775808")
-	assert.Assert(t, len(res.Error) > 0, res)
+	res, err = ParseFloat("9223372036854775808")
+	assert.Assert(t, err != nil, res)
 
-	res = ParseFloat("95.98")
-	assert.Assert(t, len(res.Error) == 0, res)
+	res, err = ParseFloat("95.98")
+	assert.Assert(t, err == nil, err)
 	assert.Assert(t, res.Int == 9598 && res.Exp == -2, res)
 
 	res.Exp += 2

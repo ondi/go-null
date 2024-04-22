@@ -23,75 +23,95 @@ const (
 	frac = 0b_00000000_00001111_11111111_11111111_11111111_11111111_11111111_11111111
 )
 
-type state_t func(r rune, size int) (next_state state_t)
+type state_t func(r rune, size int) (state state_t, err error)
 
 type Decimal_t struct {
-	Error    string
-	input    string
 	Int      int64
-	frac_exp int64
 	Exp      int64
-	int_sign bool
-	exp_sign bool
+	frac_exp int64
+	sign_int bool
+	sign_exp bool
 }
 
-func (self *Decimal_t) parse_int1(r rune, size int) (state state_t) {
+func (self *Decimal_t) parse_int1(r rune, size int) (state state_t, err error) {
 	switch r {
-	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+	case '0':
+		state = self.parse_int2
+	case '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = int64(r - '0')
-		state = self.parse_int3
+		state = self.parse_int4
 	case '-':
-		self.int_sign = true
-		state = self.parse_int2
+		self.sign_int = true
+		state = self.parse_int3
 	case '+':
-		state = self.parse_int2
+		state = self.parse_int3
 	case '.':
 		state = self.parse_frac1
 	default:
-		self.Error = fmt.Sprintf("parse_int1: invalid format %q", self.input)
+		err = fmt.Errorf("parse_int1: invalid format %q", r)
 	}
 	return
 }
 
-// here should not be EOF
-func (self *Decimal_t) parse_int2(r rune, size int) (state state_t) {
+// check format 0x, 0b
+func (self *Decimal_t) parse_int2(r rune, size int) (state state_t, err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = self.Int*10 + int64(r-'0')
-		state = self.parse_int3
-	case '.':
-		state = self.parse_frac1
-	default:
-		self.Error = fmt.Sprintf("parse_int2: invalid format %q", self.input)
-	}
-	return
-}
-
-func (self *Decimal_t) parse_int3(r rune, size int) (state state_t) {
-	var ok bool
-	switch r {
-	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
-			self.Error = fmt.Sprintf("parse_int3: overflow %q", self.input)
-			return
-		}
-		state = self.parse_int3
+		state = self.parse_int4
+	case 'b', 'B':
+		err = fmt.Errorf("binary format not supported")
+	case 'x', 'X':
+		err = fmt.Errorf("hexadecimal format not supported")
 	case '.':
 		state = self.parse_frac1
 	case 0:
 		// ok
 	default:
-		self.Error = fmt.Sprintf("parse_int3: invalid format %q", self.input)
+		err = fmt.Errorf("parse_int2: invalid format %q", r)
 	}
 	return
 }
 
-func (self *Decimal_t) parse_frac1(r rune, size int) (state state_t) {
+// here should not be EOF
+func (self *Decimal_t) parse_int3(r rune, size int) (state state_t, err error) {
+	switch r {
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		self.Int = self.Int*10 + int64(r-'0')
+		state = self.parse_int4
+	case '.':
+		state = self.parse_frac1
+	default:
+		err = fmt.Errorf("parse_int2: invalid format %q", r)
+	}
+	return
+}
+
+func (self *Decimal_t) parse_int4(r rune, size int) (state state_t, err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
-			self.Error = fmt.Sprintf("parse_frac1: overflow %q", self.input)
+			err = fmt.Errorf("parse_int3: overflow")
+			return
+		}
+		state = self.parse_int4
+	case '.':
+		state = self.parse_frac1
+	case 0:
+		// ok
+	default:
+		err = fmt.Errorf("parse_int3: invalid format %q", r)
+	}
+	return
+}
+
+func (self *Decimal_t) parse_frac1(r rune, size int) (state state_t, err error) {
+	var ok bool
+	switch r {
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
+			err = fmt.Errorf("parse_frac1: overflow")
 			return
 		}
 		self.frac_exp++
@@ -101,62 +121,62 @@ func (self *Decimal_t) parse_frac1(r rune, size int) (state state_t) {
 	case 0:
 		// ok
 	default:
-		self.Error = fmt.Sprintf("parse_frac1: invalid format %q", self.input)
+		err = fmt.Errorf("parse_frac1: invalid format %q", r)
 	}
 	return
 }
 
-func (self *Decimal_t) parse_exp1(r rune, size int) (state state_t) {
+func (self *Decimal_t) parse_exp1(r rune, size int) (state state_t, err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = int64(r - '0')
 		state = self.parse_exp3
 	case '-':
-		self.exp_sign = true
+		self.sign_exp = true
 		state = self.parse_exp2
 	case '+':
 		state = self.parse_exp2
 	default:
-		self.Error = fmt.Sprintf("parse_exp1: invalid format %q", self.input)
+		err = fmt.Errorf("parse_exp1: invalid format %q", r)
 	}
 	return
 }
 
 // here should not be EOF
-func (self *Decimal_t) parse_exp2(r rune, size int) (state state_t) {
+func (self *Decimal_t) parse_exp2(r rune, size int) (state state_t, err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = self.Exp*10 + int64(r-'0')
 		state = self.parse_exp3
 	default:
-		self.Error = fmt.Sprintf("parse_exp2: invalid format %q", self.input)
+		err = fmt.Errorf("parse_exp2: invalid format %q", r)
 	}
 	return
 }
 
-func (self *Decimal_t) parse_exp3(r rune, size int) (state state_t) {
+func (self *Decimal_t) parse_exp3(r rune, size int) (state state_t, err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Exp, ok = MulAdd64(self.Exp, 10, int64(r-'0')); !ok {
-			self.Error = fmt.Sprintf("parse_exp3: overflow %q", self.input)
+			err = fmt.Errorf("parse_exp3: overflow")
 			return
 		}
 		state = self.parse_exp3
 	case 0:
 		// ok
 	default:
-		self.Error = fmt.Sprintf("parse_exp3: invalid format %q", self.input)
+		err = fmt.Errorf("parse_exp3: invalid format %q", r)
 	}
 	return
 }
 
 func (self *Decimal_t) final() {
-	if self.exp_sign {
+	if self.sign_exp {
 		self.Exp = -self.Exp
 	}
 	self.Exp -= self.frac_exp
-	if self.int_sign {
+	if self.sign_int {
 		self.Int = -self.Int
 	}
 }
@@ -175,13 +195,15 @@ func (self *Decimal_t) Int64() int64 {
 	return self.Int * Width10(self.Exp)
 }
 
-func ParseFloat(in string) (res Decimal_t) {
-	res.input = in
+func ParseFloat(in string) (res Decimal_t, err error) {
 	state := res.parse_int1
 	reader := strings.NewReader(in)
 	for state != nil {
 		last_rune, last_size, _ := reader.ReadRune()
-		state = state(last_rune, last_size)
+		if state, err = state(last_rune, last_size); err != nil {
+			err = fmt.Errorf("%v - %w", in, err)
+			return
+		}
 	}
 	res.final()
 	return
@@ -198,21 +220,27 @@ func Width10(in int64) (res int64) {
 // https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
 
 func Add64(a int64, b int64) (int64, bool) {
-	if b > 0 && a > math.MaxInt64-b {
-		return a, false
-	}
-	if b < 0 && a < math.MinInt64-b {
-		return a, false
+	if b > 0 {
+		if a > math.MaxInt64-b {
+			return a, false
+		}
+	} else if b < 0 {
+		if a < math.MinInt64-b {
+			return a, false
+		}
 	}
 	return a + b, true
 }
 
 func Sub64(a int64, b int64) (int64, bool) {
-	if b < 0 && a > math.MaxInt64+b {
-		return a, false
-	}
-	if b > 0 && a < math.MinInt64+b {
-		return a, false
+	if b > 0 {
+		if a < math.MinInt64+b {
+			return a, false
+		}
+	} else if b < 0 {
+		if a > math.MaxInt64+b {
+			return a, false
+		}
 	}
 	return a - b, true
 }
@@ -228,8 +256,7 @@ func Mul64(a int64, b int64) (int64, bool) {
 				return a, false
 			}
 		}
-	}
-	if a < 0 {
+	} else if a < 0 {
 		if b > 0 {
 			if a < math.MinInt64/b {
 				return a, false
