@@ -23,9 +23,9 @@ const (
 	frac = 0b_00000000_00001111_11111111_11111111_11111111_11111111_11111111_11111111
 )
 
-type next_state_t func(r rune, size int) (next_state next_state_t)
+type state_t func(r rune, size int) (next_state state_t)
 
-type Float_t struct {
+type Decimal_t struct {
 	Error    string
 	input    string
 	Int      int64
@@ -35,18 +35,18 @@ type Float_t struct {
 	exp_sign bool
 }
 
-func (self *Float_t) parse_int1(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_int1(r rune, size int) (state state_t) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = int64(r - '0')
-		next_state = self.parse_int3
+		state = self.parse_int3
 	case '-':
 		self.int_sign = true
-		next_state = self.parse_int2
+		state = self.parse_int2
 	case '+':
-		next_state = self.parse_int2
+		state = self.parse_int2
 	case '.':
-		next_state = self.parse_frac1
+		state = self.parse_frac1
 	default:
 		self.Error = fmt.Sprintf("parse_int1: invalid format %q", self.input)
 	}
@@ -54,20 +54,20 @@ func (self *Float_t) parse_int1(r rune, size int) (next_state next_state_t) {
 }
 
 // here should not be EOF
-func (self *Float_t) parse_int2(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_int2(r rune, size int) (state state_t) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = self.Int*10 + int64(r-'0')
-		next_state = self.parse_int3
+		state = self.parse_int3
 	case '.':
-		next_state = self.parse_frac1
+		state = self.parse_frac1
 	default:
 		self.Error = fmt.Sprintf("parse_int2: invalid format %q", self.input)
 	}
 	return
 }
 
-func (self *Float_t) parse_int3(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_int3(r rune, size int) (state state_t) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -75,9 +75,9 @@ func (self *Float_t) parse_int3(r rune, size int) (next_state next_state_t) {
 			self.Error = fmt.Sprintf("parse_int3: overflow %q", self.input)
 			return
 		}
-		next_state = self.parse_int3
+		state = self.parse_int3
 	case '.':
-		next_state = self.parse_frac1
+		state = self.parse_frac1
 	case 0:
 		// ok
 	default:
@@ -86,7 +86,7 @@ func (self *Float_t) parse_int3(r rune, size int) (next_state next_state_t) {
 	return
 }
 
-func (self *Float_t) parse_frac1(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_frac1(r rune, size int) (state state_t) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -95,9 +95,9 @@ func (self *Float_t) parse_frac1(r rune, size int) (next_state next_state_t) {
 			return
 		}
 		self.frac_exp++
-		next_state = self.parse_frac1
+		state = self.parse_frac1
 	case 'e', 'E':
-		next_state = self.parse_exp1
+		state = self.parse_exp1
 	case 0:
 		// ok
 	default:
@@ -106,16 +106,16 @@ func (self *Float_t) parse_frac1(r rune, size int) (next_state next_state_t) {
 	return
 }
 
-func (self *Float_t) parse_exp1(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_exp1(r rune, size int) (state state_t) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = int64(r - '0')
-		next_state = self.parse_exp3
+		state = self.parse_exp3
 	case '-':
 		self.exp_sign = true
-		next_state = self.parse_exp2
+		state = self.parse_exp2
 	case '+':
-		next_state = self.parse_exp2
+		state = self.parse_exp2
 	default:
 		self.Error = fmt.Sprintf("parse_exp1: invalid format %q", self.input)
 	}
@@ -123,18 +123,18 @@ func (self *Float_t) parse_exp1(r rune, size int) (next_state next_state_t) {
 }
 
 // here should not be EOF
-func (self *Float_t) parse_exp2(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_exp2(r rune, size int) (state state_t) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = self.Exp*10 + int64(r-'0')
-		next_state = self.parse_exp3
+		state = self.parse_exp3
 	default:
 		self.Error = fmt.Sprintf("parse_exp2: invalid format %q", self.input)
 	}
 	return
 }
 
-func (self *Float_t) parse_exp3(r rune, size int) (next_state next_state_t) {
+func (self *Decimal_t) parse_exp3(r rune, size int) (state state_t) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -142,7 +142,7 @@ func (self *Float_t) parse_exp3(r rune, size int) (next_state next_state_t) {
 			self.Error = fmt.Sprintf("parse_exp3: overflow %q", self.input)
 			return
 		}
-		next_state = self.parse_exp3
+		state = self.parse_exp3
 	case 0:
 		// ok
 	default:
@@ -151,7 +151,7 @@ func (self *Float_t) parse_exp3(r rune, size int) (next_state next_state_t) {
 	return
 }
 
-func (self *Float_t) final() {
+func (self *Decimal_t) final() {
 	if self.exp_sign {
 		self.Exp = -self.Exp
 	}
@@ -161,27 +161,27 @@ func (self *Float_t) final() {
 	}
 }
 
-func (self *Float_t) String() string {
+func (self *Decimal_t) String() string {
 	if self.Exp == 0 {
 		return fmt.Sprintf("%d", self.Int)
 	}
 	return fmt.Sprintf("%de%d", self.Int, self.Exp)
 }
 
-func (self *Float_t) Int64() int64 {
+func (self *Decimal_t) Int64() int64 {
 	if self.Exp < 0 {
 		return self.Int / Width10(-self.Exp)
 	}
 	return self.Int * Width10(self.Exp)
 }
 
-func ParseFloat(in string) (res Float_t) {
+func ParseFloat(in string) (res Decimal_t) {
 	res.input = in
-	next_state := res.parse_int1
+	state := res.parse_int1
 	reader := strings.NewReader(in)
-	for next_state != nil {
+	for state != nil {
 		last_rune, last_size, _ := reader.ReadRune()
-		next_state = next_state(last_rune, last_size)
+		state = state(last_rune, last_size)
 	}
 	res.final()
 	return

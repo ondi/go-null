@@ -235,7 +235,7 @@ func TestLimit01(t *testing.T) {
 }
 
 func TestParseFloat01(t *testing.T) {
-	var res Float_t
+	var res Decimal_t
 
 	res = ParseFloat("")
 	assert.Assert(t, len(res.Error) > 0, res)
