@@ -333,5 +333,6 @@ func TestParseFloat01(t *testing.T) {
 	assert.Assert(t, res.Int == 9598 && res.Exp == -2, res)
 
 	res.Exp += 2
-	t.Logf("int64=%v, str=%v", res.Int64(), res.String())
+	i, ok := res.Int64()
+	t.Logf("int64=%v, ok=%v, str=%v", i, ok, res.String())
 }

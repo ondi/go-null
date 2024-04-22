@@ -188,11 +188,11 @@ func (self *Decimal_t) String() string {
 	return fmt.Sprintf("%de%d", self.Int, self.Exp)
 }
 
-func (self *Decimal_t) Int64() int64 {
+func (self *Decimal_t) Int64() (int64, bool) {
 	if self.Exp < 0 {
-		return self.Int / Width10(-self.Exp)
+		return self.Int / Width10(-self.Exp), true
 	}
-	return self.Int * Width10(self.Exp)
+	return Mul64(self.Int, Width10(self.Exp))
 }
 
 func ParseFloat(in string) (res Decimal_t, err error) {
