@@ -87,6 +87,8 @@ func (self *FromString_t) parse_int4(r rune, size int) (err error) {
 		self.state = self.parse_int4
 	case '.':
 		self.state = self.parse_frac1
+	case 'e', 'E':
+		self.state = self.parse_exp1
 	case 0:
 		self.state = nil
 	default:

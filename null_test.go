@@ -282,6 +282,10 @@ func TestParseFloat01(t *testing.T) {
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
 
+	Int, Exp, err = ParseFloatString("-1e1", false)
+	assert.Assert(t, err == nil, err)
+	assert.Assert(t, Int == -1 && Exp == 1, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+
 	Int, Exp, err = ParseFloatString("-1.", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
