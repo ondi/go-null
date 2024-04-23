@@ -188,31 +188,32 @@ func (self *ParseFloat_t) final() {
 }
 
 func ParseFloat(in string, frac_overflow bool) (Int int64, Exp int64, err error) {
-	if Int, Exp, err = ParseFloatReader(strings.NewReader(in), frac_overflow); err != nil {
+	p, err := ParseFloatReader(strings.NewReader(in), frac_overflow)
+	if err != nil {
 		err = fmt.Errorf("%q - %w", in, err)
 	}
-	return
+	return p.Int, p.Exp, err
 }
 
 func ParseFloatByte(in []byte, frac_overflow bool) (Int int64, Exp int64, err error) {
-	if Int, Exp, err = ParseFloatReader(bytes.NewReader(in), frac_overflow); err != nil {
+	p, err := ParseFloatReader(bytes.NewReader(in), frac_overflow)
+	if err != nil {
 		err = fmt.Errorf("%q - %w", in, err)
 	}
-	return
+	return p.Int, p.Exp, err
 }
 
-func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (Int int64, Exp int64, err error) {
-	p := ParseFloat_t{}
+func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (p ParseFloat_t, err error) {
 	p.state = p.parse_int1
 	p.frac_overflow = frac_overflow
 	for p.state != nil {
 		last_rune, last_size, _ := reader.ReadRune()
 		if err = p.state(last_rune, last_size); err != nil {
-			return 0, 0, err
+			return
 		}
 	}
 	p.final()
-	return p.Int, p.Exp, err
+	return
 }
 
 func Width10(in int64) (res int64) {
