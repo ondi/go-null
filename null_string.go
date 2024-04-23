@@ -104,30 +104,3 @@ func (self String) Value() (driver.Value, error) {
 	}
 	return nil, nil
 }
-
-// to make String() method available for embedded String type
-type Str = String
-
-type StringPrice struct {
-	Str
-}
-
-func (self StringPrice) MarshalJSON() (res []byte, err error) {
-	if self.Valid {
-		return []byte(self.Data), nil
-	}
-	return []byte("null"), nil
-}
-
-func (self *StringPrice) UnmarshalJSON(data []byte) (err error) {
-	if len(data) == 0 || data[0] == 'n' {
-		self.Valid = false
-		return
-	}
-	if data[0] == '"' && json.Unmarshal(data, &self.Data) == nil {
-		self.Valid = true
-	} else {
-		self.Data, self.Valid = string(data), true
-	}
-	return
-}

@@ -5,7 +5,9 @@
 package null
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"math"
 	"strings"
 )
@@ -23,31 +25,14 @@ import (
 // 	frac = 0b_00000000_00001111_11111111_11111111_11111111_11111111_11111111_11111111
 // )
 
-type Decimal_t struct {
-	Int int64
-	Exp int64
-}
-
-func (self *Decimal_t) String() string {
-	if self.Exp == 0 {
-		return fmt.Sprintf("%d", self.Int)
-	}
-	return fmt.Sprintf("%de%d", self.Int, self.Exp)
-}
-
-func (self *Decimal_t) Int64() (int64, bool) {
-	if self.Exp < 0 {
-		return self.Int / Width10(-self.Exp), true
-	}
-	return Mul64(self.Int, Width10(self.Exp))
-}
-
 type ParseFloat_t struct {
-	Decimal_t
-	state    func(r rune, size int) (err error)
-	frac_exp int64
-	sign_int bool
-	sign_exp bool
+	Int           int64
+	Exp           int64
+	state         func(r rune, size int) (err error)
+	frac_exp      int64
+	sign_int      bool
+	sign_exp      bool
+	frac_overflow bool
 }
 
 func (self *ParseFloat_t) parse_int1(r rune, size int) (err error) {
@@ -99,7 +84,7 @@ func (self *ParseFloat_t) parse_int3(r rune, size int) (err error) {
 	case '.':
 		self.state = self.parse_frac1
 	default:
-		err = fmt.Errorf("parse_int2: invalid format %q", r)
+		err = fmt.Errorf("parse_int3: invalid format %q", r)
 	}
 	return
 }
@@ -109,7 +94,7 @@ func (self *ParseFloat_t) parse_int4(r rune, size int) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
-			err = fmt.Errorf("parse_int3: overflow")
+			err = fmt.Errorf("parse_int4: overflow")
 			return
 		}
 		self.state = self.parse_int4
@@ -118,7 +103,7 @@ func (self *ParseFloat_t) parse_int4(r rune, size int) (err error) {
 	case 0:
 		self.state = nil
 	default:
-		err = fmt.Errorf("parse_int3: invalid format %q", r)
+		err = fmt.Errorf("parse_int4: invalid format %q", r)
 	}
 	return
 }
@@ -128,7 +113,11 @@ func (self *ParseFloat_t) parse_frac1(r rune, size int) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
-			err = fmt.Errorf("parse_frac1: overflow")
+			if self.frac_overflow {
+				self.state = nil
+			} else {
+				err = fmt.Errorf("parse_frac1: overflow")
+			}
 			return
 		}
 		self.frac_exp++
@@ -198,20 +187,32 @@ func (self *ParseFloat_t) final() {
 	}
 }
 
-func ParseFloat(in string) (res Decimal_t, err error) {
-	reader := strings.NewReader(in)
+func ParseFloat(in string, frac_overflow bool) (Int int64, Exp int64, err error) {
+	if Int, Exp, err = ParseFloatReader(strings.NewReader(in), frac_overflow); err != nil {
+		err = fmt.Errorf("%q - %w", in, err)
+	}
+	return
+}
+
+func ParseFloatByte(in []byte, frac_overflow bool) (Int int64, Exp int64, err error) {
+	if Int, Exp, err = ParseFloatReader(bytes.NewReader(in), frac_overflow); err != nil {
+		err = fmt.Errorf("%q - %w", in, err)
+	}
+	return
+}
+
+func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (Int int64, Exp int64, err error) {
 	p := ParseFloat_t{}
 	p.state = p.parse_int1
+	p.frac_overflow = frac_overflow
 	for p.state != nil {
 		last_rune, last_size, _ := reader.ReadRune()
 		if err = p.state(last_rune, last_size); err != nil {
-			err = fmt.Errorf("%v - %w", in, err)
-			return
+			return 0, 0, err
 		}
 	}
 	p.final()
-	res = p.Decimal_t
-	return
+	return p.Int, p.Exp, err
 }
 
 func Width10(in int64) (res int64) {
