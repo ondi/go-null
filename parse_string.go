@@ -62,7 +62,7 @@ func (self *FromString_t) parse_int2(r rune, size int) (err error) {
 	return
 }
 
-// here should not be EOF
+// expecting a digit or fraction
 func (self *FromString_t) parse_int3(r rune, size int) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -158,7 +158,7 @@ func (self *FromString_t) parse_exp1(r rune, size int) (err error) {
 	return
 }
 
-// here should not be EOF
+// expecting a digit
 func (self *FromString_t) parse_exp2(r rune, size int) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
