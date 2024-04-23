@@ -97,7 +97,7 @@ func (self *Decimal64) Scan(value interface{}) (err error) {
 	case int64:
 		self.Int, self.Exp, self.Valid = v, 0, true
 	case float64:
-		if self.Int, self.Exp, err = ParseFloatFloat(v); err == nil {
+		if self.Int, self.Exp, err = ParseFloatFloat(v, true); err == nil {
 			self.Valid = true
 		}
 	case bool:

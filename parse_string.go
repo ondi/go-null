@@ -13,9 +13,9 @@ import (
 )
 
 type FromString_t struct {
+	state         func(r rune, size int) (err error)
 	Int           int64
 	Exp           int64
-	state         func(r rune, size int) (err error)
 	frac_exp      int64
 	sign_int      bool
 	sign_exp      bool
