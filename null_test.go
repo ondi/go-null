@@ -328,9 +328,9 @@ func TestParseFloat01(t *testing.T) {
 	res, err = ParseFloat("9223372036854775808")
 	assert.Assert(t, err != nil, res)
 
-	res, err = ParseFloat("95.98")
+	res, err = ParseFloat("3.1415926535")
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, res.Int == 9598 && res.Exp == -2, res)
+	assert.Assert(t, res.Int == 31415926535 && res.Exp == -10, res)
 
 	res.Exp += 2
 	i, ok := res.Int64()
