@@ -244,101 +244,101 @@ func TestParseFloat01(t *testing.T) {
 	var err error
 	var Int, Exp int64
 
-	Int, Exp, err = ParseFloat("", false)
+	Int, Exp, err = ParseFloatString("", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-", false)
+	Int, Exp, err = ParseFloatString("-", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("+", false)
+	Int, Exp, err = ParseFloatString("+", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("0", false)
+	Int, Exp, err = ParseFloatString("0", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 0 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("00", false)
+	Int, Exp, err = ParseFloatString("00", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 0 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("001", false)
+	Int, Exp, err = ParseFloatString("001", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-0", false)
+	Int, Exp, err = ParseFloatString("-0", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 0 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("+0", false)
+	Int, Exp, err = ParseFloatString("+0", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 0 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-1", false)
+	Int, Exp, err = ParseFloatString("-1", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("+1", false)
+	Int, Exp, err = ParseFloatString("+1", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-1.", false)
+	Int, Exp, err = ParseFloatString("-1.", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("+1.", false)
+	Int, Exp, err = ParseFloatString("+1.", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-1.e", false)
+	Int, Exp, err = ParseFloatString("-1.e", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-1.e0", false)
+	Int, Exp, err = ParseFloatString("-1.e0", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.000", false)
+	Int, Exp, err = ParseFloatString("-123.000", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -123000 && Exp == -3, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.0001", false)
+	Int, Exp, err = ParseFloatString("-123.0001", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1230001 && Exp == -4, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.0001e1", false)
+	Int, Exp, err = ParseFloatString("-123.0001e1", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1230001 && Exp == -3, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.0001e-1", false)
+	Int, Exp, err = ParseFloatString("-123.0001e-1", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1230001 && Exp == -5, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.0001e10", false)
+	Int, Exp, err = ParseFloatString("-123.0001e10", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1230001 && Exp == 6, Int, Exp)
 
-	Int, Exp, err = ParseFloat("-123.0001e-10", false)
+	Int, Exp, err = ParseFloatString("-123.0001e-10", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == -1230001 && Exp == -14, Int, Exp)
 
-	Int, Exp, err = ParseFloat("9223372036854775807", false)
+	Int, Exp, err = ParseFloatString("9223372036854775807", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 9223372036854775807 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("922337203685477580.7", false)
+	Int, Exp, err = ParseFloatString("922337203685477580.7", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 9223372036854775807 && Exp == -1, Int, Exp)
 
-	Int, Exp, err = ParseFloat("922337203685477580.8", false)
+	Int, Exp, err = ParseFloatString("922337203685477580.8", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("922337203685477580.8", true)
+	Int, Exp, err = ParseFloatString("922337203685477580.8", true)
 	assert.NilError(t, err)
 	assert.Assert(t, Int == 922337203685477580 && Exp == 0, Int, Exp)
 
-	Int, Exp, err = ParseFloat("9223372036854775808", false)
+	Int, Exp, err = ParseFloatString("9223372036854775808", false)
 	assert.Assert(t, err != nil, Int, Exp)
 
-	Int, Exp, err = ParseFloat("3.1415926535", false)
+	Int, Exp, err = ParseFloatString("3.1415926535", false)
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, Int == 31415926535 && Exp == -10, Int, Exp)
 

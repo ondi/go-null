@@ -75,7 +75,7 @@ func (self *Decimal64) UnmarshalYAML(value *yaml.Node) (err error) {
 		return
 	}
 	if temp != nil {
-		if self.Int, self.Exp, err = ParseFloat(*temp, true); err == nil {
+		if self.Int, self.Exp, err = ParseFloatString(*temp, true); err == nil {
 			self.Valid = true
 		}
 	} else {
@@ -87,7 +87,7 @@ func (self *Decimal64) UnmarshalYAML(value *yaml.Node) (err error) {
 func (self *Decimal64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case string:
-		if self.Int, self.Exp, err = ParseFloat(v, true); err == nil {
+		if self.Int, self.Exp, err = ParseFloatString(v, true); err == nil {
 			self.Valid = true
 		}
 	case []uint8:
@@ -96,8 +96,10 @@ func (self *Decimal64) Scan(value interface{}) (err error) {
 		}
 	case int64:
 		self.Int, self.Exp, self.Valid = v, 0, true
-	// case float64:
-	// TODO
+	case float64:
+		if self.Int, self.Exp, err = ParseFloatFloat(v); err == nil {
+			self.Valid = true
+		}
 	case bool:
 		if v {
 			self.Int, self.Exp, self.Valid = 1, 0, true
