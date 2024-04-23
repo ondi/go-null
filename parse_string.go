@@ -53,7 +53,7 @@ func (self *FromString_t) parse_int2(r rune, size int) (err error) {
 	case 'x', 'X':
 		err = fmt.Errorf("hexadecimal format not supported")
 	case '.':
-		self.state = self.parse_frac1
+		self.state = self.parse_frac2
 	case 0:
 		self.state = nil
 	default:
@@ -86,7 +86,7 @@ func (self *FromString_t) parse_int4(r rune, size int) (err error) {
 		}
 		self.state = self.parse_int4
 	case '.':
-		self.state = self.parse_frac1
+		self.state = self.parse_frac2
 	case 'e', 'E':
 		self.state = self.parse_exp1
 	case 0:
@@ -97,6 +97,7 @@ func (self *FromString_t) parse_int4(r rune, size int) (err error) {
 	return
 }
 
+// expecting a digit
 func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
 	var ok bool
 	switch r {
@@ -110,13 +111,33 @@ func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
 			return
 		}
 		self.frac_exp++
-		self.state = self.parse_frac1
+		self.state = self.parse_frac2
+	default:
+		err = fmt.Errorf("parse_frac1: invalid format %q", r)
+	}
+	return
+}
+
+func (self *FromString_t) parse_frac2(r rune, size int) (err error) {
+	var ok bool
+	switch r {
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
+			if self.frac_overflow {
+				self.state = nil
+			} else {
+				err = fmt.Errorf("parse_frac2: overflow")
+			}
+			return
+		}
+		self.frac_exp++
+		self.state = self.parse_frac2
 	case 'e', 'E':
 		self.state = self.parse_exp1
 	case 0:
 		self.state = nil
 	default:
-		err = fmt.Errorf("parse_frac1: invalid format %q", r)
+		err = fmt.Errorf("parse_frac2: invalid format %q", r)
 	}
 	return
 }
