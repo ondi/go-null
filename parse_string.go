@@ -104,9 +104,9 @@ func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
 			if self.frac_overflow {
-				self.state = nil
-			} else {
 				err = fmt.Errorf("parse_frac1: overflow")
+			} else {
+				self.state = nil
 			}
 			return
 		}
@@ -124,9 +124,9 @@ func (self *FromString_t) parse_frac2(r rune, size int) (err error) {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
 			if self.frac_overflow {
-				self.state = nil
-			} else {
 				err = fmt.Errorf("parse_frac2: overflow")
+			} else {
+				self.state = nil
 			}
 			return
 		}
