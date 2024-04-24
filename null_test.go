@@ -352,9 +352,9 @@ func TestParseFloat01(t *testing.T) {
 	Int, Exp, err = ParseFloatString("9223372036854775808", true)
 	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
 
-	Int, Exp, err = ParseFloatString("3.1415926535", true)
+	Int, Exp, err = ParseFloatString("3.14159265358979323846264338327950288419716939937510", false)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 31415926535 && Exp == -10, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 3141592653589793238 && Exp == -18, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
 
 	d := Decimal64{Int: Int, Exp: Exp, Valid: true}
 	i, ok := d.Int64()
