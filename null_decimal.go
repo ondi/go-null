@@ -21,13 +21,6 @@ func (self Decimal64) IsZero() bool {
 	return self.Valid
 }
 
-func (self *Decimal64) Int64() (int64, bool) {
-	if self.Exp < 0 {
-		return self.Int / Width10(-self.Exp), true
-	}
-	return Mul64(self.Int, Width10(self.Exp))
-}
-
 func (self Decimal64) String() string {
 	if self.Valid {
 		return fmt.Sprintf("%de%d", self.Int, self.Exp)
