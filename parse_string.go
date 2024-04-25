@@ -226,14 +226,6 @@ func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (p FromString_t,
 	return
 }
 
-func Width10(in int64) (res int64) {
-	res = 1
-	for i := int64(0); i < in; i++ {
-		res *= 10
-	}
-	return
-}
-
 // https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
 
 func Add64(a int64, b int64) (int64, bool) {
