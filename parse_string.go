@@ -80,7 +80,7 @@ func (self *FromString_t) parse_int4(r rune, size int) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
+		if self.Int, ok = MulAddInt64(self.Int, 10, int64(r-'0')); !ok {
 			err = fmt.Errorf("parse_int4: overflow")
 			return
 		}
@@ -102,7 +102,7 @@ func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
+		if self.Int, ok = MulAddInt64(self.Int, 10, int64(r-'0')); !ok {
 			if self.frac_overflow {
 				err = fmt.Errorf("parse_frac1: overflow")
 			} else {
@@ -122,7 +122,7 @@ func (self *FromString_t) parse_frac2(r rune, size int) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		if self.Int, ok = MulAdd64(self.Int, 10, int64(r-'0')); !ok {
+		if self.Int, ok = MulAddInt64(self.Int, 10, int64(r-'0')); !ok {
 			if self.frac_overflow {
 				err = fmt.Errorf("parse_frac2: overflow")
 			} else {
@@ -174,7 +174,7 @@ func (self *FromString_t) parse_exp3(r rune, size int) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		if self.Exp, ok = MulAdd64(self.Exp, 10, int64(r-'0')); !ok {
+		if self.Exp, ok = MulAddInt64(self.Exp, 10, int64(r-'0')); !ok {
 			err = fmt.Errorf("parse_exp3: overflow")
 			return
 		}
@@ -228,7 +228,7 @@ func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (p FromString_t,
 
 // https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
 
-func Add64(a int64, b int64) (int64, bool) {
+func AddInt64(a int64, b int64) (int64, bool) {
 	if b > 0 {
 		if a > math.MaxInt64-b {
 			return a, false
@@ -241,7 +241,7 @@ func Add64(a int64, b int64) (int64, bool) {
 	return a + b, true
 }
 
-func Sub64(a int64, b int64) (int64, bool) {
+func SubInt64(a int64, b int64) (int64, bool) {
 	if b > 0 {
 		if a < math.MinInt64+b {
 			return a, false
@@ -254,7 +254,7 @@ func Sub64(a int64, b int64) (int64, bool) {
 	return a - b, true
 }
 
-func Mul64(a int64, b int64) (int64, bool) {
+func MulInt64(a int64, b int64) (int64, bool) {
 	if a > 0 {
 		if b > 0 {
 			if a > math.MaxInt64/b {
@@ -280,9 +280,9 @@ func Mul64(a int64, b int64) (int64, bool) {
 }
 
 // res = a * b + c
-func MulAdd64(a int64, b int64, c int64) (int64, bool) {
-	if temp, ok := Mul64(a, b); ok {
-		if temp, ok = Add64(temp, c); ok {
+func MulAddInt64(a int64, b int64, c int64) (int64, bool) {
+	if temp, ok := MulInt64(a, b); ok {
+		if temp, ok = AddInt64(temp, c); ok {
 			return temp, true
 		}
 	}
