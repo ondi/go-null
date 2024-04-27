@@ -367,9 +367,27 @@ func TestParseFloat01(t *testing.T) {
 
 func TestParseFloat02(t *testing.T) {
 	var err error
-	var Int, Exp int64
+	var d Decimal64
 
-	Int, Exp, err = ParseFloatFloat(3.1415926535, true)
+	err = d.Scan("3.1415926535")
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 31415926535 && Exp == -10, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, d.Int == 31415926535 && d.Exp == -10, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+
+	int_part, ok := d.IntPart()
+	assert.Assert(t, int_part == 3 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+
+	err = d.Scan("3.1415926535e5")
+	assert.Assert(t, err == nil, err)
+	assert.Assert(t, d.Int == 31415926535 && d.Exp == -5, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+
+	int_part, ok = d.IntPart()
+	assert.Assert(t, int_part == 314159 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+
+	err = d.Scan("12.34")
+	assert.Assert(t, err == nil, err)
+	assert.Assert(t, d.Int == 1234 && d.Exp == -2, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+
+	d.Exp += 2 // * 100
+	int_part, ok = d.IntPart()
+	assert.Assert(t, int_part == 1234 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
 }
