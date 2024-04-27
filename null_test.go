@@ -387,7 +387,7 @@ func TestParseFloat02(t *testing.T) {
 	assert.Assert(t, err == nil, err)
 	assert.Assert(t, d.Int == 1234 && d.Exp == -2, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
 
-	d.Exp += 2 // * 100
+	d.Exp += 3 // * 1000
 	int_part, ok = d.IntPart()
-	assert.Assert(t, int_part == 1234 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+	assert.Assert(t, int_part == 12340 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
 }
