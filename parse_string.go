@@ -13,7 +13,7 @@ import (
 )
 
 type FromString_t struct {
-	state         func(r rune, size int) (err error)
+	state         func(r rune) (err error)
 	Int           int64
 	Exp           int64
 	frac_exp      int64
@@ -22,7 +22,7 @@ type FromString_t struct {
 	frac_overflow bool
 }
 
-func (self *FromString_t) parse_int1(r rune, size int) (err error) {
+func (self *FromString_t) parse_int1(r rune) (err error) {
 	switch r {
 	case '0':
 		self.state = self.parse_int2
@@ -43,7 +43,7 @@ func (self *FromString_t) parse_int1(r rune, size int) (err error) {
 }
 
 // check format 0x, 0b
-func (self *FromString_t) parse_int2(r rune, size int) (err error) {
+func (self *FromString_t) parse_int2(r rune) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = self.Int*10 + int64(r-'0')
@@ -63,7 +63,7 @@ func (self *FromString_t) parse_int2(r rune, size int) (err error) {
 }
 
 // expecting a digit or fraction
-func (self *FromString_t) parse_int3(r rune, size int) (err error) {
+func (self *FromString_t) parse_int3(r rune) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Int = self.Int*10 + int64(r-'0')
@@ -76,7 +76,7 @@ func (self *FromString_t) parse_int3(r rune, size int) (err error) {
 	return
 }
 
-func (self *FromString_t) parse_int4(r rune, size int) (err error) {
+func (self *FromString_t) parse_int4(r rune) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -98,7 +98,7 @@ func (self *FromString_t) parse_int4(r rune, size int) (err error) {
 }
 
 // expecting a digit
-func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
+func (self *FromString_t) parse_frac1(r rune) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -118,7 +118,7 @@ func (self *FromString_t) parse_frac1(r rune, size int) (err error) {
 	return
 }
 
-func (self *FromString_t) parse_frac2(r rune, size int) (err error) {
+func (self *FromString_t) parse_frac2(r rune) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -142,7 +142,7 @@ func (self *FromString_t) parse_frac2(r rune, size int) (err error) {
 	return
 }
 
-func (self *FromString_t) parse_exp1(r rune, size int) (err error) {
+func (self *FromString_t) parse_exp1(r rune) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = int64(r - '0')
@@ -159,7 +159,7 @@ func (self *FromString_t) parse_exp1(r rune, size int) (err error) {
 }
 
 // expecting a digit
-func (self *FromString_t) parse_exp2(r rune, size int) (err error) {
+func (self *FromString_t) parse_exp2(r rune) (err error) {
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		self.Exp = self.Exp*10 + int64(r-'0')
@@ -170,7 +170,7 @@ func (self *FromString_t) parse_exp2(r rune, size int) (err error) {
 	return
 }
 
-func (self *FromString_t) parse_exp3(r rune, size int) (err error) {
+func (self *FromString_t) parse_exp3(r rune) (err error) {
 	var ok bool
 	switch r {
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -217,8 +217,8 @@ func ParseFloatReader(reader io.RuneReader, frac_overflow bool) (p FromString_t,
 	p.state = p.parse_int1
 	p.frac_overflow = frac_overflow
 	for p.state != nil {
-		last_rune, last_size, _ := reader.ReadRune()
-		if err = p.state(last_rune, last_size); err != nil {
+		r, _, _ := reader.ReadRune()
+		if err = p.state(r); err != nil {
 			return
 		}
 	}
