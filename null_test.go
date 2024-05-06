@@ -6,7 +6,6 @@ package null
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -246,131 +245,131 @@ func TestParseFloat01(t *testing.T) {
 	var Int, Exp int64
 
 	Int, Exp, err = ParseFloatString("", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString(".", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("+", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-.", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-.0", true)
-	assert.Assert(t, err == nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err == nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("0", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 0 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 0 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("00", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 0 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 0 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("001", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("123", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 123 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 123 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-0", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 0 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 0 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("+0", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 0 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 0 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("+1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-1e1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1 && Exp == 1, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1 && Exp == 1, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-1.", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("+1.", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-1.e", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-1.e0", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.000", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -123000 && Exp == -3, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -123000 && Exp == -3, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -4, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -4, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567e0", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -4, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -4, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567e1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -3, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -3, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567e-1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -5, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -5, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567e10", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == 6, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == 6, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-123.4567e-10", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -14, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -14, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString(".1234567e-1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 1234567 && Exp == -8, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 1234567 && Exp == -8, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("-.1234567e-1", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == -1234567 && Exp == -8, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == -1234567 && Exp == -8, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("9223372036854775807", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 9223372036854775807 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 9223372036854775807 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("922337203685477580.7", true)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 9223372036854775807 && Exp == -1, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 9223372036854775807 && Exp == -1, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("922337203685477580.8", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("922337203685477580.8", false)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 922337203685477580 && Exp == 0, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 922337203685477580 && Exp == 0, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("9223372036854775808", true)
-	assert.Assert(t, err != nil, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, err != nil, "int=%v, exp=%v", Int, Exp)
 
 	Int, Exp, err = ParseFloatString("3.14159265358979323846264338327950288419716939937510", false)
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, Int == 3141592653589793238 && Exp == -18, fmt.Sprintf("int=%v, exp=%v", Int, Exp))
+	assert.Assert(t, Int == 3141592653589793238 && Exp == -18, "int=%v, exp=%v", Int, Exp)
 }
 
 func TestParseFloat02(t *testing.T) {
@@ -379,23 +378,23 @@ func TestParseFloat02(t *testing.T) {
 
 	err = d.Scan("3.1415926535")
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, d.Int == 31415926535 && d.Exp == -10, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+	assert.Assert(t, d.Int == 31415926535 && d.Exp == -10, "int=%v, exp=%v", d.Int, d.Exp)
 
 	int_part, ok := d.IntPart()
-	assert.Assert(t, int_part == 3 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+	assert.Assert(t, int_part == 3 && ok, "int=%v, ok=%v", int_part, ok)
 
 	err = d.Scan("3.1415926535e5")
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, d.Int == 31415926535 && d.Exp == -5, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+	assert.Assert(t, d.Int == 31415926535 && d.Exp == -5, "int=%v, exp=%v", d.Int, d.Exp)
 
 	int_part, ok = d.IntPart()
-	assert.Assert(t, int_part == 314159 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+	assert.Assert(t, int_part == 314159 && ok, "int=%v, ok=%v", int_part, ok)
 
 	err = d.Scan("12.34")
 	assert.Assert(t, err == nil, err)
-	assert.Assert(t, d.Int == 1234 && d.Exp == -2, fmt.Sprintf("int=%v, exp=%v", d.Int, d.Exp))
+	assert.Assert(t, d.Int == 1234 && d.Exp == -2, "int=%v, exp=%v", d.Int, d.Exp)
 
 	d.Exp += 3 // * 1000
 	int_part, ok = d.IntPart()
-	assert.Assert(t, int_part == 12340 && ok, fmt.Sprintf("int=%v, ok=%v", int_part, ok))
+	assert.Assert(t, int_part == 12340 && ok, "int=%v, ok=%v", int_part, ok)
 }
