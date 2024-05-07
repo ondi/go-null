@@ -11,6 +11,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var FRAC_OVERFLOW = false
+
 type Decimal64 struct {
 	Int   int64 `json:"-"`
 	Exp   int64 `json:"-"`
@@ -52,9 +54,9 @@ func (self *Decimal64) UnmarshalJSON(data []byte) (err error) {
 		return
 	}
 	if data[0] == '"' {
-		self.Int, self.Exp, err = ParseFloatByte(data[1:len(data)-1], false)
+		self.Int, self.Exp, err = ParseFloatByte(data[1:len(data)-1], FRAC_OVERFLOW)
 	} else {
-		self.Int, self.Exp, err = ParseFloatByte(data, false)
+		self.Int, self.Exp, err = ParseFloatByte(data, FRAC_OVERFLOW)
 	}
 	if err == nil {
 		self.Valid = true
@@ -68,7 +70,7 @@ func (self *Decimal64) UnmarshalYAML(value *yaml.Node) (err error) {
 		return
 	}
 	if temp != nil {
-		if self.Int, self.Exp, err = ParseFloatString(*temp, false); err == nil {
+		if self.Int, self.Exp, err = ParseFloatString(*temp, FRAC_OVERFLOW); err == nil {
 			self.Valid = true
 		}
 	} else {
@@ -80,17 +82,17 @@ func (self *Decimal64) UnmarshalYAML(value *yaml.Node) (err error) {
 func (self *Decimal64) Scan(value interface{}) (err error) {
 	switch v := value.(type) {
 	case string:
-		if self.Int, self.Exp, err = ParseFloatString(v, false); err == nil {
+		if self.Int, self.Exp, err = ParseFloatString(v, FRAC_OVERFLOW); err == nil {
 			self.Valid = true
 		}
 	case []uint8:
-		if self.Int, self.Exp, err = ParseFloatByte(v, false); err == nil {
+		if self.Int, self.Exp, err = ParseFloatByte(v, FRAC_OVERFLOW); err == nil {
 			self.Valid = true
 		}
 	case int64:
 		self.Int, self.Exp, self.Valid = v, 0, true
 	case float64:
-		if self.Int, self.Exp, err = ParseFloatFloat(v, false); err == nil {
+		if self.Int, self.Exp, err = ParseFloatFloat(v, FRAC_OVERFLOW); err == nil {
 			self.Valid = true
 		}
 	case bool:
