@@ -116,15 +116,16 @@ func (self Decimal64) Value() (driver.Value, error) {
 	return nil, nil
 }
 
-func (self *Decimal64) IntPart() (res int64, ok bool) {
-	res = self.Int
+func (self *Decimal64) IntPart(exp_bias int64) (res int64, ok bool) {
 	ok = true
-	if self.Exp < 0 {
-		for i := self.Exp; i < 0; i++ {
+	res = self.Int
+	exp := self.Exp + exp_bias
+	if exp < 0 {
+		for i := exp; i < 0; i++ {
 			res = res / 10
 		}
-	} else if self.Exp > 0 {
-		for i := int64(0); i < self.Exp; i++ {
+	} else if exp > 0 {
+		for i := int64(0); i < exp; i++ {
 			if res, ok = MulInt64(res, 10); !ok {
 				return
 			}
