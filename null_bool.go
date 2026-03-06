@@ -51,7 +51,7 @@ func (self Bool) MarshalJSON() ([]byte, error) {
 }
 
 func (self *Bool) UnmarshalJSON(data []byte) (err error) {
-	if len(data) == 0 || data[0] == 'n' {
+	if len(data) == 0 || data[0] == 'n' || len(data) == 2 && data[0] == '"' && data[1] == '"' {
 		self.Valid = false
 		return
 	}

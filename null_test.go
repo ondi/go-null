@@ -84,6 +84,7 @@ func TestString05(t *testing.T) {
 
 func TestInt64(t *testing.T) {
 	var test1 Int64
+
 	json.Unmarshal([]byte("10"), &test1)
 	assert.Assert(t, test1.String() == "10", test1)
 
@@ -97,6 +98,7 @@ func TestInt64(t *testing.T) {
 
 func TestFloat64(t *testing.T) {
 	var test1 Float64
+
 	json.Unmarshal([]byte("5.5"), &test1)
 	assert.Assert(t, test1.String() == "5.5")
 
@@ -110,6 +112,7 @@ func TestFloat64(t *testing.T) {
 
 func TestBool(t *testing.T) {
 	var test1 Bool
+
 	json.Unmarshal([]byte("false"), &test1)
 	assert.Assert(t, test1.String() == "false")
 
@@ -118,6 +121,9 @@ func TestBool(t *testing.T) {
 	assert.Assert(t, string(temp) == "false", test1)
 
 	json.Unmarshal([]byte("null"), &test1)
+	assert.Assert(t, test1.String() == "null")
+
+	json.Unmarshal([]byte(""), &test1)
 	assert.Assert(t, test1.String() == "null")
 }
 
@@ -209,6 +215,7 @@ func TestTime02(t *testing.T) {
 	var test1 struct {
 		Test Time `json:"test"`
 	}
+
 	in1 := "null"
 	err := json.Unmarshal([]byte(in1), &test1)
 	assert.Assert(t, err == nil, err)
